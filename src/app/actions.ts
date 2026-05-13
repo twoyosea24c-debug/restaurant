@@ -270,6 +270,22 @@ export async function toggleProduct(formData: FormData) {
   redirectWithNotice(formData, "/admin#products", product.active ? "商品を非公開にしました。" : "商品を公開しました。");
 }
 
+export async function deleteProduct(formData: FormData) {
+  await requireEditable(formData, "/admin#products");
+  const product = await prisma.product.findFirst({
+    where: { id: text(formData, "productId"), storeId: defaultStoreId },
+  });
+  if (!product) {
+    redirectWithError(formData, "/admin#products", "商品が見つかりません。");
+  }
+  await prisma.product.delete({ where: { id: product.id } });
+  await writeAudit("delete", "PRODUCT", product.id, `商品を削除: ${product.name}`);
+  revalidatePath("/");
+  revalidatePath("/admin");
+  revalidatePath(`/admin/products/${product.id}`);
+  redirectWithNotice(formData, "/admin#products", "商品を削除しました。");
+}
+
 export async function updateOrderStatus(formData: FormData) {
   await requireEditable(formData, "/admin#orders");
   const order = await prisma.order.update({

@@ -1,7 +1,7 @@
 import type { CSSProperties } from "react";
 import { cookies } from "next/headers";
 import { notFound, redirect } from "next/navigation";
-import { updateProduct, toggleProduct, adjustStock } from "@/app/actions";
+import { updateProduct, toggleProduct, adjustStock, deleteProduct } from "@/app/actions";
 import { logout } from "@/app/login/actions";
 import { formatPrice, getProductDetail, stockMovementTypeLabels, stockMovementTypes, statusLabels, toOrderStatusKey } from "@/lib/data";
 import { session, verifySessionValue } from "@/lib/session";
@@ -127,6 +127,11 @@ export default async function ProductDetailPage({
               <button className="secondary-action" type="submit">
                 {product.active ? "非公開にする" : "公開する"}
               </button>
+            </form>
+            <form action={deleteProduct} style={{ marginTop: 12 }}>
+              <input name="productId" type="hidden" value={product.id} />
+              <input name="returnTo" type="hidden" value="/admin#products" />
+              <button className="secondary-action danger-action" type="submit">商品を削除</button>
             </form>
           </section>
 

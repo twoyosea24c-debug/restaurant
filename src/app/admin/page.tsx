@@ -7,6 +7,7 @@ import {
   addProduct,
   addReplyTemplate,
   adjustStock,
+  deleteProduct,
   restoreBackup,
   saveBookingRules,
   saveDesign,
@@ -728,62 +729,41 @@ export default async function Home({
                 <table className="product-admin-table">
                   <thead>
                     <tr>
-                      <th>商品</th>
+                      <th>商品名</th>
                       <th>価格</th>
                       <th>在庫</th>
-                      <th>公開</th>
-                      <th>操作</th>
+                      <th>状態</th>
+                      <th></th>
                     </tr>
                   </thead>
                   <tbody>
                     {filteredProducts.map((product) => (
                       <tr key={product.id}>
                         <td>
-                          <form action={updateProduct} id={`product-row-${product.id}`} className="product-row-form">
-                            <input name="productId" type="hidden" value={product.id} />
-                            <input name="returnTo" type="hidden" value="/admin#products" />
-                            <label>
-                              商品名
-                              <input name="name" defaultValue={product.name} required />
-                            </label>
-                            <label>
-                              説明
-                              <textarea name="description" rows={2} defaultValue={product.description} required />
-                            </label>
-                          </form>
+                          <a className="product-row-link" href={`#product-detail-${product.id}`}>
+                            <strong>{product.name}</strong>
+                            <span>{product.description}</span>
+                          </a>
                         </td>
+                        <td>{formatPrice(product.price)}</td>
+                        <td>{product.stock}</td>
                         <td>
-                          <label className="compact-field">
-                            価格
-                            <input form={`product-row-${product.id}`} name="price" type="number" min="0" step="1" defaultValue={product.price} required />
-                          </label>
-                        </td>
-                        <td>
-                          <label className="compact-field">
-                            在庫
-                            <input form={`product-row-${product.id}`} name="stock" type="number" min="0" step="1" defaultValue={product.stock} required />
-                          </label>
-                        </td>
-                        <td>
-                          <label className="compact-field">
-                            公開状態
-                            <select form={`product-row-${product.id}`} name="active" defaultValue={String(product.active)}>
-                              <option value="true">公開</option>
-                              <option value="false">非公開</option>
-                            </select>
-                          </label>
                           <span className="module-status">{product.active ? "公開中" : "非公開"}</span>
                         </td>
                         <td>
-                          <div className="table-actions">
-                            <button form={`product-row-${product.id}`} className="secondary-action" type="submit">保存</button>
-                            <a className="secondary-action" href={`/admin/products/${product.id}`}>詳細</a>
+                          <div className="table-actions compact-actions">
+                            <a className="secondary-action" href={`#product-detail-${product.id}`}>確認</a>
                             <form action={toggleProduct}>
                               <input name="productId" type="hidden" value={product.id} />
                               <input name="returnTo" type="hidden" value="/admin#products" />
                               <button className="secondary-action" type="submit">
                                 {product.active ? "非公開" : "公開"}
                               </button>
+                            </form>
+                            <form action={deleteProduct}>
+                              <input name="productId" type="hidden" value={product.id} />
+                              <input name="returnTo" type="hidden" value="/admin#products" />
+                              <button className="secondary-action danger-action" type="submit">削除</button>
                             </form>
                           </div>
                         </td>
@@ -793,6 +773,67 @@ export default async function Home({
                 </table>
               </div>
               {filteredProducts.length === 0 ? <p className="empty-state">条件に一致する商品はありません。</p> : null}
+              <div className="product-detail-stack">
+                {filteredProducts.map((product, index) => (
+                  <article className="product-detail-card" id={`product-detail-${product.id}`} key={product.id}>
+                    <div className="product-detail-summary">
+                      <div>
+                        <h3>{product.name}</h3>
+                        <p>{product.description}</p>
+                      </div>
+                      <div className="product-detail-price">
+                        <strong>{formatPrice(product.price)}</strong>
+                        <span>在庫 {product.stock} / {product.active ? "公開中" : "非公開"}</span>
+                      </div>
+                    </div>
+                    <form action={updateProduct} className="settings-form product-detail-edit">
+                      <input name="productId" type="hidden" value={product.id} />
+                      <input name="returnTo" type="hidden" value={`/admin?selectedProduct=${index}#product-detail-${product.id}`} />
+                      <label>
+                        商品名
+                        <input name="name" defaultValue={product.name} required />
+                      </label>
+                      <label>
+                        説明
+                        <textarea name="description" rows={3} defaultValue={product.description} required />
+                      </label>
+                      <div className="form-grid product-inline-fields">
+                        <label>
+                          価格
+                          <input name="price" type="number" min="0" step="1" defaultValue={product.price} required />
+                        </label>
+                        <label>
+                          在庫
+                          <input name="stock" type="number" min="0" step="1" defaultValue={product.stock} required />
+                        </label>
+                        <label>
+                          公開状態
+                          <select name="active" defaultValue={String(product.active)}>
+                            <option value="true">公開</option>
+                            <option value="false">非公開</option>
+                          </select>
+                        </label>
+                      </div>
+                      <button type="submit">保存</button>
+                    </form>
+                    <div className="product-detail-actions">
+                      <a className="secondary-action" href={`/admin/products/${product.id}`}>個別ページ</a>
+                      <form action={toggleProduct}>
+                        <input name="productId" type="hidden" value={product.id} />
+                        <input name="returnTo" type="hidden" value={`/admin?selectedProduct=${index}#product-detail-${product.id}`} />
+                        <button className="secondary-action" type="submit">
+                          {product.active ? "非公開にする" : "公開する"}
+                        </button>
+                      </form>
+                      <form action={deleteProduct}>
+                        <input name="productId" type="hidden" value={product.id} />
+                        <input name="returnTo" type="hidden" value="/admin#products" />
+                        <button className="secondary-action danger-action" type="submit">削除</button>
+                      </form>
+                    </div>
+                  </article>
+                ))}
+              </div>
             </div>
           </section>
         </section>

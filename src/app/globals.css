@@ -1388,16 +1388,34 @@ tr:hover td {
 
 .product-admin-table th,
 .product-admin-table td {
-  vertical-align: top;
+  vertical-align: middle;
+  white-space: nowrap;
 }
 
 .product-admin-table td:first-child {
-  min-width: 260px;
+  min-width: 220px;
+  white-space: normal;
 }
 
-.product-row-form {
+.product-row-link {
   display: grid;
-  gap: 10px;
+  gap: 3px;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.product-row-link strong {
+  font-size: 14px;
+}
+
+.product-row-link span {
+  color: var(--muted);
+  display: -webkit-box;
+  font-size: 12px;
+  line-clamp: 1;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .compact-field {
@@ -1421,15 +1439,86 @@ tr:hover td {
 }
 
 .table-actions {
-  display: grid;
+  display: flex;
+  flex-wrap: wrap;
   gap: 8px;
-  min-width: 112px;
+  min-width: 150px;
 }
 
 .table-actions .secondary-action,
 .table-actions button {
-  width: 100%;
+  min-height: 36px;
+  padding: 8px 10px;
   justify-content: center;
+}
+
+.compact-actions {
+  min-width: 210px;
+}
+
+.danger-action {
+  border-color: #f2c6bf;
+  color: #a33a2d;
+}
+
+.product-detail-stack {
+  display: grid;
+  gap: 12px;
+}
+
+.product-detail-card {
+  display: none;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: #ffffff;
+  padding: 16px;
+  box-shadow: var(--shadow);
+}
+
+.product-detail-card:target {
+  display: grid;
+  gap: 16px;
+}
+
+.product-detail-summary {
+  display: grid;
+  gap: 14px;
+}
+
+.product-detail-summary h3 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.product-detail-summary p {
+  margin: 6px 0 0;
+  color: var(--muted);
+}
+
+.product-detail-price {
+  display: grid;
+  gap: 4px;
+  justify-items: start;
+}
+
+.product-detail-price strong {
+  font-size: 22px;
+}
+
+.product-detail-price span {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.product-detail-edit {
+  border-top: 1px solid var(--line);
+  padding-top: 14px;
+}
+
+.product-detail-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
 .product-admin-head {
@@ -1469,5 +1558,15 @@ tr:hover td {
   .product-admin-head {
     grid-template-columns: minmax(0, 1fr) auto;
     align-items: start;
+  }
+
+  .product-detail-summary {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: start;
+  }
+
+  .product-detail-price {
+    justify-items: end;
+    text-align: right;
   }
 }
