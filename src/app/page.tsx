@@ -61,23 +61,6 @@ export default async function PublicPage({ searchParams }: { searchParams: Promi
       {notice ? <p className="notice-banner">{notice}</p> : null}
       {error ? <p className="notice-banner error-banner">{error}</p> : null}
 
-      <section className="dashboard-grid">
-        <article className="panel">
-          <div className="panel-head">
-            <h2>予約</h2>
-            <span>既存機能</span>
-          </div>
-          <p className="empty-state">予約受付・変更依頼・キャンセル依頼と同じ顧客情報へ注文を紐付けます。</p>
-        </article>
-        <article className="panel">
-          <div className="panel-head">
-            <h2>商品販売</h2>
-            <span>注文受付</span>
-          </div>
-          <p className="empty-state">最初は決済なしで注文を受け付け、店舗から連絡する運用にしています。</p>
-        </article>
-      </section>
-
       <section id="booking" className="panel">
         <div className="panel-head">
           <h2>予約受付</h2>
