@@ -12,8 +12,7 @@
     "db:seed": "tsx prisma/seed.ts",
     "db:pg:push": "prisma db push --schema prisma/schema.postgres.prisma",
     "db:pg:generate": "prisma generate --schema prisma/schema.postgres.prisma",
-    "prisma:generate": "prisma generate",
-    "postinstall": "prisma generate"
+    "prisma:generate": "prisma generate"
   },
   "dependencies": {
     "@prisma/client": "^6.19.0",
