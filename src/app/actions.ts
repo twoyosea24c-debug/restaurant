@@ -473,7 +473,7 @@ export async function createInquiry(formData: FormData) {
   await notifyNewInquiry({ store, inquiry, customer });
   await writeAudit("create", "INQUIRY", inquiry.id, `問い合わせ受付: ${inquiry.inquiryNumber}`);
   revalidatePath("/");
-  redirectWithNotice(formData, "/#contact", "問い合わせを受け付けました。");
+  redirectWithNotice(formData, "/#contact", "お問い合わせを送信しました。");
 }
 
 export async function updateInquiryStatus(formData: FormData) {
@@ -538,7 +538,7 @@ export async function sendInquiryReply(formData: FormData) {
   revalidatePath("/admin");
   revalidatePath(`/admin/customers/${inquiry.customerId}`);
   revalidatePath(`/admin/inquiries/${inquiry.id}`);
-  redirectWithNotice(formData, `/admin/inquiries/${inquiry.id}`, "顧客へ返信メールを送信しました。");
+  redirectWithNotice(formData, `/admin/inquiries/${inquiry.id}`, "メールを送信しました。");
 }
 
 export async function addInternalNote(formData: FormData) {

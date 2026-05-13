@@ -16,6 +16,10 @@ function formatTimeOption(minutes: number) {
   return `${hours}:${mins}`;
 }
 
+function RequiredMark() {
+  return <span className="required-badge">必須</span>;
+}
+
 export default async function PublicPage({ searchParams }: { searchParams: Promise<{ notice?: string; error?: string }> }) {
   const { notice, error } = await searchParams;
   const data = await getAppData();
@@ -81,7 +85,7 @@ export default async function PublicPage({ searchParams }: { searchParams: Promi
         </div>
         <form action={createBooking} className="form-grid booking-form-grid">
           <label className="booking-service-field">
-            メニュー
+            <span className="field-label">メニュー <RequiredMark /></span>
             <select name="serviceId" required>
               {data.services.map((service) => (
                 <option key={service.id} value={service.id}>
@@ -91,11 +95,11 @@ export default async function PublicPage({ searchParams }: { searchParams: Promi
             </select>
           </label>
           <label className="booking-date-field">
-            希望日
+            <span className="field-label">希望日 <RequiredMark /></span>
             <input name="startDate" type="date" required />
           </label>
           <label className="booking-time-field">
-            希望時刻
+            <span className="field-label">希望時刻 <RequiredMark /></span>
             <select name="startTime" required>
               {bookingTimeOptions.map((time) => (
                 <option key={time} value={time}>
@@ -105,16 +109,16 @@ export default async function PublicPage({ searchParams }: { searchParams: Promi
             </select>
           </label>
           <label className="booking-name-field">
-            名前
+            <span className="field-label">名前 <RequiredMark /></span>
             <input name="name" required />
           </label>
           <label>
-            メール
+            <span className="field-label">メール <RequiredMark /></span>
             <input name="email" type="email" required />
           </label>
           <label>
-            電話
-            <input name="phone" />
+            <span className="field-label">電話 <RequiredMark /></span>
+            <input name="phone" required />
           </label>
           <label>
             メモ
@@ -132,11 +136,11 @@ export default async function PublicPage({ searchParams }: { searchParams: Promi
           </div>
           <form action={requestBookingChange} className="settings-form">
             <label>
-              予約番号
+              <span className="field-label">予約番号 <RequiredMark /></span>
               <input name="bookingNumber" placeholder="BKG-1001" required />
             </label>
             <label>
-              変更内容
+              <span className="field-label">変更内容 <RequiredMark /></span>
               <textarea name="requestNote" rows={3} required />
             </label>
             <button type="submit">変更を依頼</button>
@@ -149,11 +153,11 @@ export default async function PublicPage({ searchParams }: { searchParams: Promi
           </div>
           <form action={requestBookingCancel} className="settings-form">
             <label>
-              予約番号
+              <span className="field-label">予約番号 <RequiredMark /></span>
               <input name="bookingNumber" placeholder="BKG-1001" required />
             </label>
             <label>
-              理由・連絡事項
+              <span className="field-label">理由・連絡事項 <RequiredMark /></span>
               <textarea name="requestNote" rows={3} required />
             </label>
             <button type="submit">キャンセルを依頼</button>
@@ -170,23 +174,23 @@ export default async function PublicPage({ searchParams }: { searchParams: Promi
         </div>
         <form action={createInquiry} className="form-grid">
           <label>
-            名前
+            <span className="field-label">名前 <RequiredMark /></span>
             <input name="name" required />
           </label>
           <label>
-            メール
+            <span className="field-label">メール <RequiredMark /></span>
             <input name="email" type="email" required />
           </label>
           <label>
-            電話
-            <input name="phone" />
+            <span className="field-label">電話 <RequiredMark /></span>
+            <input name="phone" required />
           </label>
           <label>
-            件名
+            <span className="field-label">件名 <RequiredMark /></span>
             <input name="subject" required />
           </label>
           <label>
-            内容
+            <span className="field-label">内容 <RequiredMark /></span>
             <textarea name="message" rows={4} required />
           </label>
           <button type="submit">問い合わせる</button>

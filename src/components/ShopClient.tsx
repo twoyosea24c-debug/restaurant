@@ -20,6 +20,10 @@ type CartItem = {
   quantity: number;
 };
 
+function RequiredMark() {
+  return <span className="required-badge">必須</span>;
+}
+
 export function ShopClient({ products }: { products: Product[] }) {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [message, setMessage] = useState("");
@@ -141,16 +145,16 @@ export function ShopClient({ products }: { products: Product[] }) {
           </div>
           {orderComplete ? <p className="notice-banner">ご注文ありがとうございます。</p> : null}
           <label>
-            名前
+            <span className="field-label">名前 <RequiredMark /></span>
             <input name="name" required />
           </label>
           <label>
-            メール
+            <span className="field-label">メール <RequiredMark /></span>
             <input name="email" type="email" required />
           </label>
           <label>
-            電話
-            <input name="phone" />
+            <span className="field-label">電話 <RequiredMark /></span>
+            <input name="phone" required />
           </label>
           <label>
             メモ

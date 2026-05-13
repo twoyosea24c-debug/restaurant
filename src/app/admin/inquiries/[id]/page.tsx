@@ -13,6 +13,10 @@ import { session, verifySessionValue } from "@/lib/session";
 
 export const dynamic = "force-dynamic";
 
+function RequiredMark() {
+  return <span className="required-badge">必須</span>;
+}
+
 export default async function InquiryDetailPage({
   params,
   searchParams,
@@ -170,11 +174,11 @@ export default async function InquiryDetailPage({
             <input name="inquiryId" type="hidden" value={inquiry.id} />
             <input name="returnTo" type="hidden" value={`/admin/inquiries/${inquiry.id}`} />
             <label>
-              件名
+              <span className="field-label">件名 <RequiredMark /></span>
               <input name="subject" defaultValue={`Re: ${inquiry.subject}`} required />
             </label>
             <label>
-              本文
+              <span className="field-label">本文 <RequiredMark /></span>
               <textarea
                 name="body"
                 rows={8}
