@@ -382,7 +382,7 @@ export async function createBooking(formData: FormData) {
   await notifyNewBooking({ store, booking, service, customer });
   await writeAudit("create", "BOOKING", booking.id, `予約受付: ${booking.bookingNumber}`);
   revalidatePath("/");
-  redirectWithNotice(formData, "/#booking", "予約を受け付けました。");
+  redirectWithNotice(formData, "/#booking", "予約が完了しました。");
 }
 
 export async function requestBookingChange(formData: FormData) {

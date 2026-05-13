@@ -79,8 +79,8 @@ export default async function PublicPage({ searchParams }: { searchParams: Promi
           <h2>予約受付</h2>
           <span>DB保存・顧客連携</span>
         </div>
-        <form action={createBooking} className="form-grid">
-          <label>
+        <form action={createBooking} className="form-grid booking-form-grid">
+          <label className="booking-service-field">
             メニュー
             <select name="serviceId" required>
               {data.services.map((service) => (
@@ -90,11 +90,11 @@ export default async function PublicPage({ searchParams }: { searchParams: Promi
               ))}
             </select>
           </label>
-          <label>
+          <label className="booking-date-field">
             希望日
             <input name="startDate" type="date" required />
           </label>
-          <label>
+          <label className="booking-time-field">
             希望時刻
             <select name="startTime" required>
               {bookingTimeOptions.map((time) => (
@@ -104,7 +104,7 @@ export default async function PublicPage({ searchParams }: { searchParams: Promi
               ))}
             </select>
           </label>
-          <label>
+          <label className="booking-name-field">
             名前
             <input name="name" required />
           </label>

@@ -266,6 +266,14 @@ label {
   align-items: end;
 }
 
+.booking-form-grid {
+  grid-template-columns: minmax(240px, 1.4fr) minmax(150px, 0.72fr) minmax(120px, 0.56fr) minmax(260px, 1.45fr);
+}
+
+.booking-form-grid button {
+  min-width: 180px;
+}
+
 .settings-form {
   max-width: 720px;
 }
