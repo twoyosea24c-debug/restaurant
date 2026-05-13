@@ -204,6 +204,7 @@ export async function updateProduct(formData: FormData) {
   await writeAudit("update", "PRODUCT", product.id, `商品を保存: ${product.name}`);
   revalidatePath("/");
   revalidatePath("/admin");
+  revalidatePath(`/admin/products/${product.id}`);
   redirectWithNotice(formData, "/admin#products", "商品を保存しました。");
 }
 
@@ -251,6 +252,7 @@ export async function adjustStock(formData: FormData) {
 
   revalidatePath("/");
   revalidatePath("/admin");
+  revalidatePath(`/admin/products/${product.id}`);
   redirectWithNotice(formData, "/admin#stock", "在庫を更新しました。");
 }
 
@@ -264,6 +266,7 @@ export async function toggleProduct(formData: FormData) {
   await writeAudit("toggle", "PRODUCT", product.id, product.active ? "商品を非公開" : "商品を公開");
   revalidatePath("/");
   revalidatePath("/admin");
+  revalidatePath(`/admin/products/${product.id}`);
   redirectWithNotice(formData, "/admin#products", product.active ? "商品を非公開にしました。" : "商品を公開しました。");
 }
 

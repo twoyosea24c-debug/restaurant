@@ -292,3 +292,48 @@ export async function getAppData() {
     inquiries,
   };
 }
+
+export async function getProductDetail(id: string) {
+  await seedDefaultData();
+  const [store, product] = await Promise.all([
+    prisma.store.findUniqueOrThrow({ where: { id: defaultStoreId } }),
+    prisma.product.findFirst({
+      where: { id, storeId: defaultStoreId },
+      include: {
+        stockMovements: {
+          orderBy: { createdAt: "desc" },
+          take: 20,
+        },
+        orderItems: {
+          include: {
+            order: {
+              include: {
+                customer: true,
+              },
+            },
+          },
+          orderBy: {
+            order: {
+              createdAt: "desc",
+            },
+          },
+          take: 20,
+        },
+      },
+    }),
+  ]);
+
+  if (!product) return null;
+
+  const activeOrderItems = product.orderItems.filter((item) => item.order.status !== "CANCELED");
+  return {
+    store,
+    product,
+    summary: {
+      orderCount: product.orderItems.length,
+      soldQuantity: activeOrderItems.reduce((sum, item) => sum + item.quantity, 0),
+      salesTotal: activeOrderItems.reduce((sum, item) => sum + item.quantity * item.price, 0),
+      stockMovementCount: product.stockMovements.length,
+    },
+  };
+}

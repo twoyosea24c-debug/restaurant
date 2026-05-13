@@ -1382,6 +1382,56 @@ tr:hover td {
   gap: 14px;
 }
 
+.product-table-wrap {
+  margin-top: 0;
+}
+
+.product-admin-table th,
+.product-admin-table td {
+  vertical-align: top;
+}
+
+.product-admin-table td:first-child {
+  min-width: 260px;
+}
+
+.product-row-form {
+  display: grid;
+  gap: 10px;
+}
+
+.compact-field {
+  display: grid;
+  gap: 6px;
+  min-width: 112px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.compact-field input,
+.compact-field select {
+  min-height: 42px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 10px 12px;
+  background: #ffffff;
+  color: var(--ink);
+  font: inherit;
+}
+
+.table-actions {
+  display: grid;
+  gap: 8px;
+  min-width: 112px;
+}
+
+.table-actions .secondary-action,
+.table-actions button {
+  width: 100%;
+  justify-content: center;
+}
+
 .product-admin-head {
   display: grid;
   gap: 10px;

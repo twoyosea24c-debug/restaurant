@@ -724,61 +724,75 @@ export default async function Home({
             </form>
 
             <div className="product-admin-list">
-            {filteredProducts.map((product) => (
-              <article className="product-admin-card" key={product.id}>
-                <div className="product-admin-head">
-                  <div>
-                    <h3>{product.name}</h3>
-                    <p>{product.description}</p>
-                  </div>
-                  <span className="module-status">{product.active ? "公開" : "非公開"}</span>
-                </div>
-                <div className="summary-strip product-admin-stats">
-                  <div>
-                    <p>価格</p>
-                    <strong>{formatPrice(product.price)}</strong>
-                  </div>
-                  <div>
-                    <p>在庫</p>
-                    <strong>{product.stock}</strong>
-                  </div>
-                </div>
-                <form action={updateProduct} className="settings-form" style={{ marginTop: 12 }}>
-                  <input name="productId" type="hidden" value={product.id} />
-                  <label>
-                    商品名
-                    <input name="name" defaultValue={product.name} required />
-                  </label>
-                  <label>
-                    価格
-                    <input name="price" type="number" defaultValue={product.price} required />
-                  </label>
-                  <label>
-                    在庫
-                    <input name="stock" type="number" defaultValue={product.stock} required />
-                  </label>
-                  <label>
-                    説明
-                    <textarea name="description" rows={3} defaultValue={product.description} required />
-                  </label>
-                  <label>
-                    公開状態
-                    <select name="active" defaultValue={String(product.active)}>
-                      <option value="true">公開</option>
-                      <option value="false">非公開</option>
-                    </select>
-                  </label>
-                  <button type="submit">保存</button>
-                </form>
-                <form action={toggleProduct} style={{ marginTop: 10 }}>
-                  <input name="productId" type="hidden" value={product.id} />
-                  <button className="secondary-action" type="submit">
-                    {product.active ? "非公開にする" : "公開する"}
-                  </button>
-                </form>
-              </article>
-            ))}
-            {filteredProducts.length === 0 ? <p className="empty-state">条件に一致する商品はありません。</p> : null}
+              <div className="table-wrap product-table-wrap">
+                <table className="product-admin-table">
+                  <thead>
+                    <tr>
+                      <th>商品</th>
+                      <th>価格</th>
+                      <th>在庫</th>
+                      <th>公開</th>
+                      <th>操作</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredProducts.map((product) => (
+                      <tr key={product.id}>
+                        <td>
+                          <form action={updateProduct} id={`product-row-${product.id}`} className="product-row-form">
+                            <input name="productId" type="hidden" value={product.id} />
+                            <input name="returnTo" type="hidden" value="/admin#products" />
+                            <label>
+                              商品名
+                              <input name="name" defaultValue={product.name} required />
+                            </label>
+                            <label>
+                              説明
+                              <textarea name="description" rows={2} defaultValue={product.description} required />
+                            </label>
+                          </form>
+                        </td>
+                        <td>
+                          <label className="compact-field">
+                            価格
+                            <input form={`product-row-${product.id}`} name="price" type="number" min="0" step="1" defaultValue={product.price} required />
+                          </label>
+                        </td>
+                        <td>
+                          <label className="compact-field">
+                            在庫
+                            <input form={`product-row-${product.id}`} name="stock" type="number" min="0" step="1" defaultValue={product.stock} required />
+                          </label>
+                        </td>
+                        <td>
+                          <label className="compact-field">
+                            公開状態
+                            <select form={`product-row-${product.id}`} name="active" defaultValue={String(product.active)}>
+                              <option value="true">公開</option>
+                              <option value="false">非公開</option>
+                            </select>
+                          </label>
+                          <span className="module-status">{product.active ? "公開中" : "非公開"}</span>
+                        </td>
+                        <td>
+                          <div className="table-actions">
+                            <button form={`product-row-${product.id}`} className="secondary-action" type="submit">保存</button>
+                            <a className="secondary-action" href={`/admin/products/${product.id}`}>詳細</a>
+                            <form action={toggleProduct}>
+                              <input name="productId" type="hidden" value={product.id} />
+                              <input name="returnTo" type="hidden" value="/admin#products" />
+                              <button className="secondary-action" type="submit">
+                                {product.active ? "非公開" : "公開"}
+                              </button>
+                            </form>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              {filteredProducts.length === 0 ? <p className="empty-state">条件に一致する商品はありません。</p> : null}
             </div>
           </section>
         </section>
