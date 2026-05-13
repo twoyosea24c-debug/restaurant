@@ -141,8 +141,9 @@ export function ShopClient({ products }: { products: Product[] }) {
         <form action={submitOrder} className="panel settings-form">
           <div className="panel-head">
             <h2>注文情報</h2>
-            <span>顧客情報へ自動紐付け</span>
+            <span>店舗から確認連絡をします</span>
           </div>
+          <p className="empty-state">送信後、在庫と受け取り方法を店舗からご連絡します。決済はまだ行われません。</p>
           {orderComplete ? <p className="notice-banner">{message}</p> : null}
           <label>
             <span className="field-label">名前 <RequiredMark /></span>

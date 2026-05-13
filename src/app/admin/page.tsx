@@ -108,6 +108,42 @@ export default async function Home({
   });
   const filteredProducts = stockView === "low" ? data.products.filter((product) => product.stock <= 3) : data.products;
   const hasFilters = Boolean(query || bookingStatus || orderStatus || inquiryStatus || dateFrom || dateTo || stockView);
+  const sampleCustomerCount = data.customers.filter((customer) => customer.email.endsWith("@example.com")).length;
+  const sampleBookingCount = data.bookings.filter((booking) => booking.bookingNumber === "BKG-1001" || booking.note.includes("サンプル")).length;
+  const sampleOrderCount = data.orders.filter((order) => order.orderNumber === "ORD-1001").length;
+  const sampleDataCount = sampleCustomerCount + sampleBookingCount + sampleOrderCount;
+  const readinessItems = [
+    {
+      done: data.store.phone !== "03-0000-0000",
+      title: "電話番号",
+      detail: data.store.phone !== "03-0000-0000" ? data.store.phone : "サンプル電話番号が残っています。",
+    },
+    {
+      done: data.services.length > 0,
+      title: "予約メニュー",
+      detail: `${data.services.length}件登録済み`,
+    },
+    {
+      done: data.products.length > 0,
+      title: "商品",
+      detail: `${data.products.length}件登録済み / 低在庫 ${data.dashboard.lowStockProducts.length}件`,
+    },
+    {
+      done: Boolean(data.notificationSetting?.enabled && data.notificationSetting.notificationEmail),
+      title: "メール通知",
+      detail: data.notificationSetting?.enabled ? `通知先: ${data.notificationSetting.notificationEmail || data.store.email}` : "メール通知が無効です。",
+    },
+    {
+      done: sampleDataCount === 0,
+      title: "テストデータ",
+      detail: sampleDataCount === 0 ? "サンプルらしいデータは見つかりません。" : `サンプル候補 ${sampleDataCount}件`,
+    },
+    {
+      done: false,
+      title: "独自ドメイン",
+      detail: "VercelのDomainsとDNSで設定してください。",
+    },
+  ];
 
   return (
     <div className="shell" style={brandStyle}>
@@ -151,6 +187,31 @@ export default async function Home({
 
         {notice ? <p className="notice-banner">{notice}</p> : null}
         {error ? <p className="notice-banner error-banner">{error}</p> : null}
+
+        <section className="panel" id="launch-checklist">
+          <div className="panel-head">
+            <h2>公開前チェックリスト</h2>
+            <span>{readinessItems.filter((item) => item.done).length}/{readinessItems.length} 完了</span>
+          </div>
+          <div className="checklist-grid">
+            {readinessItems.map((item) => (
+              <article className="checklist-item" key={item.title}>
+                <span className={item.done ? "check-status done" : "check-status pending"}>
+                  {item.done ? "完了" : "要確認"}
+                </span>
+                <div>
+                  <strong>{item.title}</strong>
+                  <p>{item.detail}</p>
+                </div>
+              </article>
+            ))}
+          </div>
+          <div className="table-actions" style={{ marginTop: 14 }}>
+            <a className="secondary-action" href="#settings">店舗情報を編集</a>
+            <a className="secondary-action" href="#products">商品を確認</a>
+            <a className="secondary-action" href="/admin/backup">バックアップ取得</a>
+          </div>
+        </section>
 
         <section className="panel">
           <div className="panel-head">

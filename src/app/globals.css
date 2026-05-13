@@ -496,6 +496,45 @@ th {
   margin: 0;
 }
 
+.checklist-grid {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.checklist-item {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 12px;
+  background: #ffffff;
+}
+
+.checklist-item p {
+  margin: 4px 0 0;
+  color: var(--muted);
+}
+
+.check-status {
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 6px;
+  white-space: nowrap;
+}
+
+.check-status.done {
+  background: var(--soft);
+  color: var(--brand);
+}
+
+.check-status.pending {
+  background: #fff1ef;
+  color: var(--danger);
+}
+
 .login-page {
   min-height: 100vh;
   display: grid;
@@ -571,6 +610,7 @@ button:disabled {
   .metrics,
   .dashboard-grid,
   .module-grid,
+  .checklist-grid,
   .product-grid,
   .status-grid,
   .summary-strip,
