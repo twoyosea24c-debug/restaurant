@@ -453,6 +453,31 @@ th {
   margin: 5px 0 14px;
 }
 
+.public-footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 16px;
+  padding: 18px 0 8px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.public-footer a {
+  color: inherit;
+}
+
+.legal-copy {
+  display: grid;
+  gap: 14px;
+  color: var(--text);
+  line-height: 1.8;
+}
+
+.legal-copy p {
+  margin: 0;
+}
+
 .login-page {
   min-height: 100vh;
   display: grid;

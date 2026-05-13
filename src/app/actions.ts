@@ -7,7 +7,7 @@ import { prisma } from "@/lib/prisma";
 import { defaultStoreId, seedDefaultData } from "@/lib/seed";
 import { toBookingStatusKey, toInquiryStatusKey, toOrderStatusKey, toPaymentStatusKey, toStockMovementTypeKey } from "@/lib/data";
 import { notifyBookingRequest, notifyNewBooking, notifyNewInquiry, notifyNewOrder } from "@/lib/notifications";
-import { sendCustomerMail } from "@/lib/mailer";
+import { sendAdminNotification, sendCustomerMail } from "@/lib/mailer";
 import { getSessionInfo, session } from "@/lib/session";
 
 function text(formData: FormData, key: string) {
@@ -757,6 +757,34 @@ export async function saveNotificationSettings(formData: FormData) {
   revalidatePath("/");
   revalidatePath("/admin");
   redirectWithNotice(formData, "/admin#settings", "メール通知設定を保存しました。");
+}
+
+export async function sendTestNotification(formData: FormData) {
+  await requireManager(formData, "/admin#settings");
+  const store = await prisma.store.findUniqueOrThrow({ where: { id: defaultStoreId } });
+  let skipped = false;
+
+  try {
+    const result = await sendAdminNotification({
+      storeEmail: store.email,
+      subject: `【${store.name}】メール通知テスト`,
+      text: [
+        "メール通知のテスト送信です。",
+        "",
+        "このメールが届いていれば、管理画面のメール通知設定は有効です。",
+      ].join("\n"),
+    });
+    skipped = result.skipped;
+  } catch {
+    redirectWithError(formData, "/admin#settings", "テストメール送信に失敗しました。SMTP設定を確認してください。");
+  }
+
+  if (skipped) {
+    redirectWithError(formData, "/admin#settings", "SMTP設定が未設定のため、テストメールを送信できません。");
+  }
+
+  await writeAudit("test", "NOTIFICATION", defaultStoreId, "メール通知テストを送信");
+  redirectWithNotice(formData, "/admin#settings", "テストメールを送信しました。");
 }
 
 export async function addReplyTemplate(formData: FormData) {

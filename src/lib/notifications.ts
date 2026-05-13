@@ -46,7 +46,8 @@ export async function notifyNewBooking(input: {
       text: [
         `${input.customer.name} 様`,
         "",
-        "予約を受け付けました。",
+        "このたびはご予約ありがとうございます。",
+        "下記内容で予約を受け付けました。",
         "",
         `予約番号: ${input.booking.bookingNumber}`,
         `メニュー: ${input.service.name}`,
@@ -107,7 +108,8 @@ export async function notifyNewInquiry(input: {
       text: [
         `${input.customer.name} 様`,
         "",
-        "お問い合わせを受け付けました。",
+        "お問い合わせありがとうございます。",
+        "下記内容でお問い合わせを受け付けました。",
         "",
         `問い合わせID: ${input.inquiry.inquiryNumber}`,
         `件名: ${input.inquiry.subject}`,
@@ -151,7 +153,8 @@ export async function notifyNewOrder(input: {
       text: [
         `${input.customer.name} 様`,
         "",
-        "注文を受け付けました。",
+        "ご注文ありがとうございます。",
+        "下記内容でご注文を受け付けました。",
         "",
         `注文ID: ${input.order.orderNumber}`,
         `合計: ${formatPrice(input.order.total)}`,

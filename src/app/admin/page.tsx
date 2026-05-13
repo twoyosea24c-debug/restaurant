@@ -12,6 +12,7 @@ import {
   saveDesign,
   saveNotificationSettings,
   saveStore,
+  sendTestNotification,
   toggleModule,
   toggleProduct,
   updateCustomerNote,
@@ -879,6 +880,11 @@ export default async function Home({
                 <input name="email" type="email" defaultValue={data.store.email} />
               </label>
               <button type="submit">保存</button>
+            </form>
+            <form action={sendTestNotification} className="settings-form" style={{ marginTop: 12 }}>
+              <button className="secondary-action" type="submit">
+                テストメールを送信
+              </button>
             </form>
           </section>
 

@@ -192,6 +192,11 @@ export default async function PublicPage({ searchParams }: { searchParams: Promi
           <button type="submit">問い合わせる</button>
         </form>
       </section>
+
+      <footer className="public-footer">
+        <a href="/legal">特定商取引法に基づく表記</a>
+        <a href="/privacy">プライバシーポリシー</a>
+      </footer>
     </main>
   );
 }
