@@ -164,7 +164,7 @@ export async function addProduct(formData: FormData) {
   if (!text(formData, "name") || !text(formData, "description")) {
     redirectWithError(formData, "/admin#products", "商品名と説明を入力してください。");
   }
-  if (number(formData, "price") < 0 || number(formData, "stock") < 0) {
+  if (!Number.isInteger(number(formData, "price")) || !Number.isInteger(number(formData, "stock")) || number(formData, "price") < 0 || number(formData, "stock") < 0) {
     redirectWithError(formData, "/admin#products", "価格と在庫は0以上で入力してください。");
   }
   const product = await prisma.product.create({
@@ -174,7 +174,7 @@ export async function addProduct(formData: FormData) {
       description: text(formData, "description"),
       price: number(formData, "price"),
       stock: number(formData, "stock"),
-      active: true,
+      active: text(formData, "active") !== "false",
     },
   });
   await writeAudit("create", "PRODUCT", product.id, `商品を追加: ${product.name}`);
@@ -185,7 +185,10 @@ export async function addProduct(formData: FormData) {
 
 export async function updateProduct(formData: FormData) {
   await requireEditable(formData, "/admin#products");
-  if (number(formData, "price") < 0 || number(formData, "stock") < 0) {
+  if (!text(formData, "name") || !text(formData, "description")) {
+    redirectWithError(formData, "/admin#products", "商品名と説明を入力してください。");
+  }
+  if (!Number.isInteger(number(formData, "price")) || !Number.isInteger(number(formData, "stock")) || number(formData, "price") < 0 || number(formData, "stock") < 0) {
     redirectWithError(formData, "/admin#products", "価格と在庫は0以上で入力してください。");
   }
   const product = await prisma.product.update({

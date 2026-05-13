@@ -676,40 +676,73 @@ export default async function Home({
         <section id="products" className="panel">
           <div className="panel-head">
             <h2>商品管理</h2>
-            <span>公開ショップに表示する商品</span>
+            <span>追加・公開設定・価格・在庫</span>
           </div>
-          <form action={addProduct} className="form-grid">
-            <label>
-              商品名
-              <input name="name" required />
-            </label>
-            <label>
-              価格
-              <input name="price" type="number" min="0" step="100" required />
-            </label>
-            <label>
-              在庫
-              <input name="stock" type="number" min="0" step="1" required />
-            </label>
-            <label>
-              説明
-              <input name="description" required />
-            </label>
-            <button type="submit">追加</button>
-          </form>
-          <div className="module-grid" style={{ marginTop: 18 }}>
+          <div className="summary-strip">
+            <div>
+              <p>登録商品</p>
+              <strong>{data.products.length}件</strong>
+            </div>
+            <div>
+              <p>公開中</p>
+              <strong>{data.products.filter((product) => product.active).length}件</strong>
+            </div>
+          </div>
+
+          <section className="product-admin-layout">
+            <form action={addProduct} className="settings-form product-create-form">
+              <div className="panel-head">
+                <h3>商品を追加</h3>
+                <span>追加後すぐ公開できます</span>
+              </div>
+              <label>
+                商品名
+                <input name="name" placeholder="例: ギフト用ハーブティー" required />
+              </label>
+              <label>
+                説明
+                <textarea name="description" rows={3} placeholder="商品内容、受け取り方法、注意事項など" required />
+              </label>
+              <div className="form-grid product-inline-fields">
+                <label>
+                  価格
+                  <input name="price" type="number" min="0" step="1" placeholder="1600" required />
+                </label>
+                <label>
+                  初期在庫
+                  <input name="stock" type="number" min="0" step="1" placeholder="10" required />
+                </label>
+                <label>
+                  公開状態
+                  <select name="active" defaultValue="true">
+                    <option value="true">公開</option>
+                    <option value="false">非公開</option>
+                  </select>
+                </label>
+              </div>
+              <button type="submit">商品を追加</button>
+            </form>
+
+            <div className="product-admin-list">
             {filteredProducts.map((product) => (
-              <article className="module-card" key={product.id}>
-                <h3>{product.name}</h3>
-                <p>{product.description}</p>
-                <p>{formatPrice(product.price)} / 在庫 {product.stock}</p>
-                <span className="module-status">{product.active ? "公開" : "非公開"}</span>
-                <form action={toggleProduct} style={{ marginTop: 12 }}>
-                  <input name="productId" type="hidden" value={product.id} />
-                  <button className="secondary-action" type="submit">
-                    {product.active ? "非公開" : "公開"}
-                  </button>
-                </form>
+              <article className="product-admin-card" key={product.id}>
+                <div className="product-admin-head">
+                  <div>
+                    <h3>{product.name}</h3>
+                    <p>{product.description}</p>
+                  </div>
+                  <span className="module-status">{product.active ? "公開" : "非公開"}</span>
+                </div>
+                <div className="summary-strip product-admin-stats">
+                  <div>
+                    <p>価格</p>
+                    <strong>{formatPrice(product.price)}</strong>
+                  </div>
+                  <div>
+                    <p>在庫</p>
+                    <strong>{product.stock}</strong>
+                  </div>
+                </div>
                 <form action={updateProduct} className="settings-form" style={{ marginTop: 12 }}>
                   <input name="productId" type="hidden" value={product.id} />
                   <label>
@@ -737,9 +770,17 @@ export default async function Home({
                   </label>
                   <button type="submit">保存</button>
                 </form>
+                <form action={toggleProduct} style={{ marginTop: 10 }}>
+                  <input name="productId" type="hidden" value={product.id} />
+                  <button className="secondary-action" type="submit">
+                    {product.active ? "非公開にする" : "公開する"}
+                  </button>
+                </form>
               </article>
             ))}
-          </div>
+            {filteredProducts.length === 0 ? <p className="empty-state">条件に一致する商品はありません。</p> : null}
+            </div>
+          </section>
         </section>
 
         <section id="stock" className="panel">

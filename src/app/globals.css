@@ -1352,3 +1352,72 @@ tr:hover td {
     justify-content: start;
   }
 }
+
+/* Product admin */
+.product-admin-layout {
+  display: grid;
+  gap: 16px;
+}
+
+.product-create-form,
+.product-admin-card {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #ffffff;
+  padding: 16px;
+}
+
+.product-create-form .panel-head {
+  margin-bottom: 12px;
+}
+
+.product-create-form h3,
+.product-admin-card h3 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.product-admin-list {
+  display: grid;
+  gap: 14px;
+}
+
+.product-admin-head {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.product-admin-head p {
+  margin: 6px 0 0;
+  color: var(--muted);
+}
+
+.product-admin-stats {
+  margin-bottom: 0;
+}
+
+.product-inline-fields {
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 900px) {
+  .product-admin-layout {
+    grid-template-columns: minmax(300px, 0.72fr) minmax(0, 1fr);
+    align-items: start;
+  }
+
+  .product-create-form {
+    position: sticky;
+    top: 18px;
+  }
+
+  .product-inline-fields {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .product-admin-head {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: start;
+  }
+}
