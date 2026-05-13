@@ -5,10 +5,30 @@ import { formatPrice, getAppData } from "@/lib/data";
 
 export const dynamic = "force-dynamic";
 
+function parseTimeMinutes(time: string) {
+  const [hours = "10", minutes = "0"] = time.split(":");
+  return Number(hours) * 60 + Number(minutes);
+}
+
+function formatTimeOption(minutes: number) {
+  const hours = String(Math.floor(minutes / 60)).padStart(2, "0");
+  const mins = String(minutes % 60).padStart(2, "0");
+  return `${hours}:${mins}`;
+}
+
 export default async function PublicPage({ searchParams }: { searchParams: Promise<{ notice?: string; error?: string }> }) {
   const { notice, error } = await searchParams;
   const data = await getAppData();
   const brandStyle = { "--brand": data.store.brandColor } as CSSProperties & Record<"--brand", string>;
+  const bookingTimeOptions = Array.from(
+    {
+      length: Math.max(
+        1,
+        Math.floor((parseTimeMinutes(data.store.businessCloseTime) - parseTimeMinutes(data.store.businessOpenTime)) / 15),
+      ),
+    },
+    (_, index) => formatTimeOption(parseTimeMinutes(data.store.businessOpenTime) + index * 15),
+  );
 
   return (
     <main className="main public-main" style={brandStyle}>
@@ -71,8 +91,18 @@ export default async function PublicPage({ searchParams }: { searchParams: Promi
             </select>
           </label>
           <label>
-            希望日時
-            <input name="startAt" type="datetime-local" step={900} required />
+            希望日
+            <input name="startDate" type="date" required />
+          </label>
+          <label>
+            希望時刻
+            <select name="startTime" required>
+              {bookingTimeOptions.map((time) => (
+                <option key={time} value={time}>
+                  {time}
+                </option>
+              ))}
+            </select>
           </label>
           <label>
             名前

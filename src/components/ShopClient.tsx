@@ -23,10 +23,12 @@ type CartItem = {
 export function ShopClient({ products }: { products: Product[] }) {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [message, setMessage] = useState("");
+  const [orderComplete, setOrderComplete] = useState(false);
   const [isPending, startTransition] = useTransition();
   const total = useMemo(() => cart.reduce((sum, item) => sum + item.price * item.quantity, 0), [cart]);
 
   function addToCart(product: Product) {
+    setOrderComplete(false);
     setMessage("カートに追加しました。");
     setCart((current) => {
       const existing = current.find((item) => item.productId === product.id);
@@ -54,6 +56,7 @@ export function ShopClient({ products }: { products: Product[] }) {
 
   async function submitOrder(formData: FormData) {
     if (cart.length === 0) {
+      setOrderComplete(false);
       setMessage("カートが空です。");
       return;
     }
@@ -68,8 +71,10 @@ export function ShopClient({ products }: { products: Product[] }) {
           items: cart.map((item) => ({ productId: item.productId, quantity: item.quantity })),
         });
         setCart([]);
+        setOrderComplete(true);
         setMessage("ご注文ありがとうございます。");
       } catch (error) {
+        setOrderComplete(false);
         setMessage(error instanceof Error ? error.message : "注文に失敗しました。");
       }
     });
@@ -134,6 +139,7 @@ export function ShopClient({ products }: { products: Product[] }) {
             <h2>注文情報</h2>
             <span>顧客情報へ自動紐付け</span>
           </div>
+          {orderComplete ? <p className="notice-banner">ご注文ありがとうございます。</p> : null}
           <label>
             名前
             <input name="name" required />

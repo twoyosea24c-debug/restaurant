@@ -314,7 +314,10 @@ export async function updatePaymentStatus(formData: FormData) {
 export async function createBooking(formData: FormData) {
   await seedDefaultData();
   const serviceId = text(formData, "serviceId");
-  const startAt = new Date(text(formData, "startAt"));
+  const startDate = text(formData, "startDate");
+  const startTime = text(formData, "startTime");
+  const startAtValue = startDate && startTime ? `${startDate}T${startTime}` : text(formData, "startAt");
+  const startAt = new Date(startAtValue);
   if (Number.isNaN(startAt.getTime())) {
     redirectWithError(formData, "/#booking", "希望日時を入力してください。");
   }
