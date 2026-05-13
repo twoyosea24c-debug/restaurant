@@ -1,5 +1,6 @@
 import type { CSSProperties } from "react";
-import { createBooking, createInquiry, requestBookingCancel, requestBookingChange } from "@/app/actions";
+import { createInquiry, requestBookingCancel, requestBookingChange } from "@/app/actions";
+import { BookingForm } from "@/components/BookingForm";
 import { ShopClient } from "@/components/ShopClient";
 import { formatPrice, getAppData } from "@/lib/data";
 
@@ -20,6 +21,13 @@ function RequiredMark() {
   return <span className="required-badge">必須</span>;
 }
 
+function formatDateInput(date: Date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
 export default async function PublicPage({ searchParams }: { searchParams: Promise<{ notice?: string; error?: string }> }) {
   const { notice, error } = await searchParams;
   const data = await getAppData();
@@ -33,6 +41,13 @@ export default async function PublicPage({ searchParams }: { searchParams: Promi
     },
     (_, index) => formatTimeOption(parseTimeMinutes(data.store.businessOpenTime) + index * 15),
   );
+  const bookedSlots = data.bookings
+    .filter((booking) => !["CANCELED", "CANCEL_REQUESTED"].includes(booking.status))
+    .map((booking) => ({
+      date: formatDateInput(booking.startAt),
+      time: formatTimeOption(booking.startAt.getHours() * 60 + booking.startAt.getMinutes()),
+    }));
+  const publicPhone = data.store.phone === "03-0000-0000" ? "店舗へお問い合わせください" : data.store.phone;
 
   return (
     <main className="main public-main" style={brandStyle}>
@@ -52,7 +67,7 @@ export default async function PublicPage({ searchParams }: { searchParams: Promi
         </div>
         <div className="public-info">
           <p>電話</p>
-          <strong>{data.store.phone}</strong>
+          <strong>{publicPhone}</strong>
           <p>メール</p>
           <strong>{data.store.email}</strong>
         </div>
@@ -66,49 +81,14 @@ export default async function PublicPage({ searchParams }: { searchParams: Promi
           <h2>予約受付</h2>
           <span>DB保存・顧客連携</span>
         </div>
-        <form action={createBooking} className="form-grid booking-form-grid">
-          <label className="booking-service-field">
-            <span className="field-label">メニュー <RequiredMark /></span>
-            <select name="serviceId" required>
-              {data.services.map((service) => (
-                <option key={service.id} value={service.id}>
-                  {service.name} / {service.durationMinutes}分 / {formatPrice(service.price)}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label className="booking-date-field">
-            <span className="field-label">希望日 <RequiredMark /></span>
-            <input name="startDate" type="date" required />
-          </label>
-          <label className="booking-time-field">
-            <span className="field-label">希望時刻 <RequiredMark /></span>
-            <select name="startTime" required>
-              {bookingTimeOptions.map((time) => (
-                <option key={time} value={time}>
-                  {time}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label className="booking-name-field">
-            <span className="field-label">名前 <RequiredMark /></span>
-            <input name="name" required />
-          </label>
-          <label>
-            <span className="field-label">メール <RequiredMark /></span>
-            <input name="email" type="email" required />
-          </label>
-          <label>
-            <span className="field-label">電話 <RequiredMark /></span>
-            <input name="phone" required />
-          </label>
-          <label>
-            メモ
-            <input name="note" placeholder="希望や相談内容" />
-          </label>
-          <button type="submit">予約する</button>
-        </form>
+        <BookingForm
+          bookedSlots={bookedSlots}
+          services={data.services.map((service) => ({
+            id: service.id,
+            label: `${service.name} / ${service.durationMinutes}分 / ${formatPrice(service.price)}`,
+          }))}
+          timeOptions={bookingTimeOptions}
+        />
       </section>
 
       <section className="dashboard-grid">

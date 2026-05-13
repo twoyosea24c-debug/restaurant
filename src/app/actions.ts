@@ -325,6 +325,9 @@ export async function createBooking(formData: FormData) {
     redirectWithError(formData, "/#booking", "予約時間は15分単位で選択してください。");
   }
   const store = await prisma.store.findUniqueOrThrow({ where: { id: defaultStoreId } });
+  if (!text(formData, "name") || !text(formData, "email") || !text(formData, "phone")) {
+    redirectWithError(formData, "/#booking", "名前、メール、電話を入力してください。");
+  }
   const customer = await findOrCreateCustomer({
     name: text(formData, "name"),
     email: text(formData, "email"),
@@ -382,7 +385,7 @@ export async function createBooking(formData: FormData) {
   await notifyNewBooking({ store, booking, service, customer });
   await writeAudit("create", "BOOKING", booking.id, `予約受付: ${booking.bookingNumber}`);
   revalidatePath("/");
-  redirectWithNotice(formData, "/#booking", "予約が完了しました。");
+  redirectWithNotice(formData, "/#booking", `予約が完了しました。予約番号: ${booking.bookingNumber}`);
 }
 
 export async function requestBookingChange(formData: FormData) {
@@ -449,8 +452,8 @@ export async function updateBookingStatus(formData: FormData) {
 
 export async function createInquiry(formData: FormData) {
   await seedDefaultData();
-  if (!text(formData, "name") || !text(formData, "email") || !text(formData, "subject") || !text(formData, "message")) {
-    redirectWithError(formData, "/#contact", "名前、メール、件名、内容を入力してください。");
+  if (!text(formData, "name") || !text(formData, "email") || !text(formData, "phone") || !text(formData, "subject") || !text(formData, "message")) {
+    redirectWithError(formData, "/#contact", "名前、メール、電話、件名、内容を入力してください。");
   }
   const store = await prisma.store.findUniqueOrThrow({ where: { id: defaultStoreId } });
   const customer = await findOrCreateCustomer({
@@ -473,7 +476,7 @@ export async function createInquiry(formData: FormData) {
   await notifyNewInquiry({ store, inquiry, customer });
   await writeAudit("create", "INQUIRY", inquiry.id, `問い合わせ受付: ${inquiry.inquiryNumber}`);
   revalidatePath("/");
-  redirectWithNotice(formData, "/#contact", "お問い合わせを送信しました。");
+  redirectWithNotice(formData, "/#contact", "お問い合わせを送信しました。店舗から折り返しご連絡します。");
 }
 
 export async function updateInquiryStatus(formData: FormData) {
@@ -846,8 +849,8 @@ export async function createOrder(input: {
   items: Array<{ productId: string; quantity: number }>;
 }) {
   await seedDefaultData();
-  if (!input.name.trim() || !input.email.trim()) {
-    throw new Error("名前とメールを入力してください。");
+  if (!input.name.trim() || !input.email.trim() || !input.phone.trim()) {
+    throw new Error("名前、メール、電話を入力してください。");
   }
   if (input.items.length === 0) {
     throw new Error("カートが空です。");
@@ -921,4 +924,5 @@ export async function createOrder(input: {
   await notifyNewOrder({ store, order, items: notificationItems, customer });
   await writeAudit("create", "ORDER", order.id, `注文受付: ${order.orderNumber}`);
   revalidatePath("/");
+  return { orderNumber: order.orderNumber };
 }

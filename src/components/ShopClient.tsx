@@ -67,7 +67,7 @@ export function ShopClient({ products }: { products: Product[] }) {
 
     startTransition(async () => {
       try {
-        await createOrder({
+        const result = await createOrder({
           name: String(formData.get("name") ?? ""),
           email: String(formData.get("email") ?? ""),
           phone: String(formData.get("phone") ?? ""),
@@ -76,7 +76,7 @@ export function ShopClient({ products }: { products: Product[] }) {
         });
         setCart([]);
         setOrderComplete(true);
-        setMessage("ご注文ありがとうございます。");
+        setMessage(`ご注文ありがとうございます。注文番号: ${result.orderNumber}`);
       } catch (error) {
         setOrderComplete(false);
         setMessage(error instanceof Error ? error.message : "注文に失敗しました。");
@@ -90,7 +90,7 @@ export function ShopClient({ products }: { products: Product[] }) {
         <h2>商品一覧・注文受付</h2>
         <span>決済なしで注文受付</span>
       </div>
-      {message ? <p className="status-badge">{message}</p> : null}
+      {message && !orderComplete ? <p className="status-badge">{message}</p> : null}
       <div className="product-grid">
         {products.map((product) => (
           <article className="product-card" key={product.id}>
@@ -143,7 +143,7 @@ export function ShopClient({ products }: { products: Product[] }) {
             <h2>注文情報</h2>
             <span>顧客情報へ自動紐付け</span>
           </div>
-          {orderComplete ? <p className="notice-banner">ご注文ありがとうございます。</p> : null}
+          {orderComplete ? <p className="notice-banner">{message}</p> : null}
           <label>
             <span className="field-label">名前 <RequiredMark /></span>
             <input name="name" required />

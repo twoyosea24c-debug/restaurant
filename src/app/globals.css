@@ -595,6 +595,20 @@ button:disabled {
     width: 100%;
   }
 
+  .panel {
+    padding: 16px;
+  }
+
+  .booking-form-grid {
+    gap: 10px;
+  }
+
+  .booking-form-grid input,
+  .booking-form-grid select,
+  .booking-form-grid button {
+    min-height: 46px;
+  }
+
   .topbar-actions,
   .public-actions {
     width: 100%;
