@@ -1260,3 +1260,95 @@ tr:hover td {
     padding: 22px;
   }
 }
+
+/* Figma-style interaction hierarchy */
+.public-main {
+  padding-bottom: 86px;
+}
+
+.public-actions {
+  display: grid;
+  grid-template-columns: 1fr;
+  margin-top: 18px;
+}
+
+.mobile-action-bar {
+  position: fixed;
+  right: 12px;
+  bottom: 12px;
+  left: 12px;
+  z-index: 30;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 16px 40px rgba(23, 29, 27, 0.16);
+  padding: 8px;
+  backdrop-filter: blur(12px);
+}
+
+.mobile-action-bar a {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  color: var(--ink);
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.mobile-action-bar a:first-child {
+  background: var(--brand);
+  color: #ffffff;
+}
+
+.booking-form-grid {
+  align-items: end;
+}
+
+.booking-service-field,
+.booking-name-field {
+  order: 0;
+}
+
+.booking-date-field,
+.booking-time-field {
+  order: 1;
+}
+
+.booking-form-grid label:not(.booking-service-field):not(.booking-name-field):not(.booking-date-field):not(.booking-time-field) {
+  order: 2;
+}
+
+.booking-form-grid button {
+  order: 3;
+}
+
+.panel:target {
+  border-color: color-mix(in srgb, var(--brand) 36%, var(--line));
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand) 12%, transparent), var(--shadow);
+}
+
+@media (min-width: 760px) {
+  .public-main {
+    padding-bottom: 22px;
+  }
+
+  .public-actions {
+    grid-template-columns: repeat(4, minmax(0, auto));
+    align-items: center;
+  }
+
+  .mobile-action-bar {
+    display: none;
+  }
+}
+
+@media (min-width: 1040px) {
+  .public-actions {
+    justify-content: start;
+  }
+}

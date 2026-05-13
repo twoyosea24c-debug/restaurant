@@ -56,9 +56,15 @@ export default async function PublicPage({ searchParams }: { searchParams: Promi
           <p className="eyebrow">Store</p>
           <h1>{data.store.name}</h1>
           <p>{data.store.description}</p>
-          <div className="public-actions">
-            <a className="primary-action" href="#shop">
-              {data.store.ctaLabel}
+          <div className="public-actions" aria-label="主要操作">
+            <a className="primary-action" href="#booking">
+              予約する
+            </a>
+            <a className="secondary-action" href="#shop">
+              商品を見る
+            </a>
+            <a className="secondary-action" href="#contact">
+              問い合わせ
             </a>
             <a className="secondary-action" href="/admin">
               管理画面
@@ -72,6 +78,12 @@ export default async function PublicPage({ searchParams }: { searchParams: Promi
           <strong>{data.store.email}</strong>
         </div>
       </header>
+
+      <nav className="mobile-action-bar" aria-label="主要操作">
+        <a href="#booking">予約</a>
+        <a href="#shop">商品</a>
+        <a href="#contact">問い合わせ</a>
+      </nav>
 
       {notice ? <p className="notice-banner">{notice}</p> : null}
       {error ? <p className="notice-banner error-banner">{error}</p> : null}
@@ -163,6 +175,7 @@ export default async function PublicPage({ searchParams }: { searchParams: Promi
       <footer className="public-footer">
         <a href="/legal">特定商取引法に基づく表記</a>
         <a href="/privacy">プライバシーポリシー</a>
+        <a href="/admin">管理画面</a>
       </footer>
     </main>
   );
