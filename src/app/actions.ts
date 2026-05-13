@@ -784,7 +784,7 @@ export async function sendTestNotification(formData: FormData) {
   }
 
   await writeAudit("test", "NOTIFICATION", defaultStoreId, "メール通知テストを送信");
-  redirectWithNotice(formData, "/admin#settings", "テストメールを送信しました。");
+  redirectWithNotice(formData, "/admin#settings", "メールを送信しました。");
 }
 
 export async function addReplyTemplate(formData: FormData) {
