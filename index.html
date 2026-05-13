@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Small Store Base</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="shell">
+      <aside class="sidebar" aria-label="管理メニュー">
+        <div class="brand">
+          <span class="brand-mark">S</span>
+          <div>
+            <p class="brand-name">Small Store Base</p>
+            <p class="brand-meta">共通管理基盤</p>
+          </div>
+        </div>
+
+        <nav class="nav" aria-label="メイン">
+          <button class="nav-item active" data-view="dashboard">ダッシュボード</button>
+          <button class="nav-item" data-view="shop">商品一覧</button>
+          <button class="nav-item" data-view="cart">カート</button>
+          <button class="nav-item" data-view="customers">顧客</button>
+          <button class="nav-item" data-view="products">商品管理</button>
+          <button class="nav-item" data-view="orders">注文管理</button>
+          <button class="nav-item" data-view="store">店舗情報</button>
+          <button class="nav-item" data-view="modules">機能</button>
+          <button class="nav-item" data-view="design">デザイン</button>
+        </nav>
+      </aside>
+
+      <main class="main">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">MVP</p>
+            <h1 id="page-title">ダッシュボード</h1>
+          </div>
+          <a class="public-link" href="#public">公開ページ</a>
+        </header>
+
+        <section class="view active" id="dashboard" aria-labelledby="page-title">
+          <div class="metrics">
+            <article class="metric">
+              <p>顧客数</p>
+              <strong id="customer-count">0</strong>
+            </article>
+            <article class="metric">
+              <p>有効モジュール</p>
+              <strong id="enabled-count">0</strong>
+            </article>
+            <article class="metric">
+              <p>注文数</p>
+              <strong id="order-count">0</strong>
+            </article>
+            <article class="metric">
+              <p>カート</p>
+              <strong id="cart-count">0</strong>
+            </article>
+            <article class="metric">
+              <p>売上見込み</p>
+              <strong id="sales-total">0円</strong>
+            </article>
+            <article class="metric">
+              <p>低在庫</p>
+              <strong id="low-stock-count">0</strong>
+            </article>
+          </div>
+
+          <section class="dashboard-grid">
+            <section class="panel">
+              <div class="panel-head">
+                <h2>注文状況</h2>
+                <span>ステータス別</span>
+              </div>
+              <div class="status-grid" id="dashboard-statuses"></div>
+            </section>
+
+            <section class="panel">
+              <div class="panel-head">
+                <h2>低在庫</h2>
+                <span>在庫3点以下</span>
+              </div>
+              <div id="dashboard-low-stock"></div>
+            </section>
+          </section>
+
+          <section class="panel">
+            <div class="panel-head">
+              <h2>最近の注文</h2>
+              <span>直近5件</span>
+            </div>
+            <div id="dashboard-recent-orders"></div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-head">
+              <h2>次に追加しやすい機能</h2>
+              <span>モジュール単位</span>
+            </div>
+            <div class="module-grid" id="dashboard-modules"></div>
+          </section>
+        </section>
+
+        <section class="view" id="shop" aria-label="商品一覧">
+          <section class="panel">
+            <div class="panel-head">
+              <h2>商品一覧</h2>
+              <span>予約アプリに統合する公開ショップ</span>
+            </div>
+            <div class="product-grid" id="shop-products"></div>
+          </section>
+          <section class="panel product-detail-panel" id="product-detail" hidden></section>
+        </section>
+
+        <section class="view" id="cart" aria-label="カート">
+          <section class="panel">
+            <div class="panel-head">
+              <h2>カート</h2>
+              <span>決済なしの注文受付</span>
+            </div>
+            <div id="cart-items"></div>
+            <div class="cart-summary">
+              <p>合計</p>
+              <strong id="cart-total">0円</strong>
+            </div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-head">
+              <h2>注文情報</h2>
+              <span>既存顧客はメールまたは電話で自動紐付け</span>
+            </div>
+            <form class="settings-form" id="order-form">
+              <label>
+                名前
+                <input name="name" autocomplete="name" required />
+              </label>
+              <label>
+                メール
+                <input name="email" type="email" autocomplete="email" required />
+              </label>
+              <label>
+                電話
+                <input name="phone" autocomplete="tel" />
+              </label>
+              <label>
+                メモ
+                <textarea name="note" rows="3" placeholder="受け取り希望や連絡事項"></textarea>
+              </label>
+              <button type="submit" id="submit-order">注文する</button>
+            </form>
+          </section>
+        </section>
+
+        <section class="view" id="customers" aria-label="顧客管理">
+          <section class="panel">
+            <div class="panel-head">
+              <h2>顧客</h2>
+              <span>予約・注文・問い合わせの共通軸</span>
+            </div>
+            <form class="customer-form" id="customer-form">
+              <label>
+                名前
+                <input name="name" autocomplete="name" required />
+              </label>
+              <label>
+                メール
+                <input name="email" type="email" autocomplete="email" required />
+              </label>
+              <label>
+                電話
+                <input name="phone" autocomplete="tel" />
+              </label>
+              <button type="submit">追加</button>
+            </form>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>名前</th>
+                    <th>メール</th>
+                    <th>電話</th>
+                    <th>履歴</th>
+                    <th>詳細</th>
+                  </tr>
+                </thead>
+                <tbody id="customer-rows"></tbody>
+              </table>
+            </div>
+          </section>
+          <section class="panel detail-panel" id="customer-detail" hidden></section>
+        </section>
+
+        <section class="view" id="products" aria-label="商品管理">
+          <section class="panel">
+            <div class="panel-head">
+              <h2>商品管理</h2>
+              <span>公開ショップに表示する商品</span>
+            </div>
+            <form class="product-form" id="product-form">
+              <label>
+                商品名
+                <input name="name" required />
+              </label>
+              <label>
+                価格
+                <input name="price" type="number" min="0" step="100" required />
+              </label>
+              <label>
+                在庫
+                <input name="stock" type="number" min="0" step="1" required />
+              </label>
+              <label>
+                説明
+                <input name="description" required />
+              </label>
+              <button type="submit">追加</button>
+            </form>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>商品</th>
+                    <th>価格</th>
+                    <th>在庫</th>
+                    <th>状態</th>
+                    <th>操作</th>
+                  </tr>
+                </thead>
+                <tbody id="product-rows"></tbody>
+              </table>
+            </div>
+          </section>
+          <section class="panel detail-panel" id="product-editor" hidden></section>
+        </section>
+
+        <section class="view" id="orders" aria-label="注文管理">
+          <section class="panel">
+            <div class="panel-head">
+              <h2>注文管理</h2>
+              <span>予約と同じ顧客情報に紐付く注文</span>
+            </div>
+            <form class="filter-form" id="order-filter-form">
+              <label>
+                検索
+                <input name="query" placeholder="注文ID・顧客名・商品名" />
+              </label>
+              <label>
+                状態
+                <select name="status">
+                  <option value="all">すべて</option>
+                  <option value="受付済み">受付済み</option>
+                  <option value="準備中">準備中</option>
+                  <option value="受け渡し済み">受け渡し済み</option>
+                  <option value="キャンセル">キャンセル</option>
+                </select>
+              </label>
+              <button type="reset">クリア</button>
+            </form>
+            <div class="summary-strip">
+              <div>
+                <p>表示中</p>
+                <strong id="filtered-order-count">0件</strong>
+              </div>
+              <div>
+                <p>表示中の合計</p>
+                <strong id="filtered-order-total">0円</strong>
+              </div>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>注文ID</th>
+                    <th>顧客</th>
+                    <th>商品</th>
+                    <th>合計</th>
+                    <th>状態</th>
+                    <th>操作</th>
+                  </tr>
+                </thead>
+                <tbody id="order-rows"></tbody>
+              </table>
+            </div>
+          </section>
+          <section class="panel detail-panel" id="order-detail" hidden></section>
+        </section>
+
+        <section class="view" id="store" aria-label="店舗情報">
+          <section class="panel">
+            <div class="panel-head">
+              <h2>店舗情報</h2>
+              <span>公開ページと管理画面で共通利用</span>
+            </div>
+            <form class="settings-form" id="store-form">
+              <label>
+                店舗名
+                <input name="name" required />
+              </label>
+              <label>
+                紹介文
+                <textarea name="description" rows="4"></textarea>
+              </label>
+              <label>
+                電話番号
+                <input name="phone" />
+              </label>
+              <label>
+                メール
+                <input name="email" type="email" />
+              </label>
+              <button type="submit">保存</button>
+            </form>
+          </section>
+        </section>
+
+        <section class="view" id="modules" aria-label="機能モジュール">
+          <section class="panel">
+            <div class="panel-head">
+              <h2>機能</h2>
+              <span>店舗ごとに追加・停止できる前提</span>
+            </div>
+            <div class="module-list" id="module-list"></div>
+          </section>
+        </section>
+
+        <section class="view" id="design" aria-label="デザイン設定">
+          <section class="panel">
+            <div class="panel-head">
+              <h2>デザイン</h2>
+              <span>公開ページと管理画面の共通トーン</span>
+            </div>
+            <form class="settings-form" id="design-form">
+              <label>
+                ブランドカラー
+                <input name="color" type="color" />
+              </label>
+              <label>
+                ボタン表示名
+                <input name="cta" />
+              </label>
+              <button type="submit">反映</button>
+            </form>
+          </section>
+        </section>
+
+        <section class="public-preview" id="public" aria-label="公開ページプレビュー">
+          <div>
+            <p class="eyebrow">公開ページ</p>
+            <h2 id="public-name"></h2>
+            <p id="public-description"></p>
+          </div>
+          <button id="public-cta">問い合わせる</button>
+        </section>
+      </main>
+    </div>
+    <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+    <script src="./app.js"></script>
+  </body>
+</html>

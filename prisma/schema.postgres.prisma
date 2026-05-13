@@ -1,0 +1,292 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Store {
+  id          String          @id @default(cuid())
+  name        String
+  description String
+  phone       String
+  email       String
+  brandColor  String          @default("#0f766e")
+  ctaLabel    String          @default("問い合わせる")
+  businessOpenTime String     @default("10:00")
+  businessCloseTime String    @default("18:00")
+  closedWeekdays String       @default("0")
+  customers   Customer[]
+  products    Product[]
+  services    Service[]
+  bookings    Booking[]
+  inquiries   Inquiry[]
+  orders      Order[]
+  payments    Payment[]
+  modules     ModuleSetting[]
+  notificationSetting NotificationSetting?
+  replyTemplates ReplyTemplate[]
+  stockMovements StockMovement[]
+  internalNotes InternalNote[]
+  adminUsers AdminUser[]
+  auditLogs AuditLog[]
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+}
+
+model Customer {
+  id        String   @id @default(cuid())
+  storeId   String
+  store     Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  name      String
+  email     String
+  phone     String?
+  bookingCount Int   @default(0)
+  tags      String   @default("")
+  memo      String   @default("")
+  orders    Order[]
+  bookings  Booking[]
+  inquiries Inquiry[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([storeId])
+  @@index([email])
+  @@index([phone])
+}
+
+model Service {
+  id              String    @id @default(cuid())
+  storeId         String
+  store           Store     @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  name            String
+  description     String
+  durationMinutes Int
+  price           Int
+  active          Boolean   @default(true)
+  bookings        Booking[]
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@index([storeId])
+}
+
+model Booking {
+  id           String   @id @default(cuid())
+  bookingNumber String  @unique
+  storeId      String
+  store        Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  customerId   String
+  customer     Customer @relation(fields: [customerId], references: [id], onDelete: Restrict)
+  serviceId    String
+  service      Service  @relation(fields: [serviceId], references: [id], onDelete: Restrict)
+  customerName String
+  status       String   @default("REQUESTED")
+  startAt      DateTime
+  note         String   @default("")
+  requestNote  String   @default("")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([storeId])
+  @@index([customerId])
+  @@index([serviceId])
+  @@index([status])
+}
+
+model Inquiry {
+  id           String   @id @default(cuid())
+  inquiryNumber String @unique
+  storeId      String
+  store        Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  customerId   String
+  customer     Customer @relation(fields: [customerId], references: [id], onDelete: Restrict)
+  customerName String
+  subject      String
+  message      String
+  status       String   @default("NEW")
+  responseNote String   @default("")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([storeId])
+  @@index([customerId])
+  @@index([status])
+}
+
+model Product {
+  id          String      @id @default(cuid())
+  storeId     String
+  store       Store       @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  name        String
+  description String
+  price       Int
+  stock       Int         @default(0)
+  active      Boolean     @default(true)
+  orderItems  OrderItem[]
+  stockMovements StockMovement[]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@index([storeId])
+}
+
+model Order {
+  id           String      @id @default(cuid())
+  orderNumber  String      @unique
+  storeId      String
+  store        Store       @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  customerId   String
+  customer     Customer    @relation(fields: [customerId], references: [id], onDelete: Restrict)
+  customerName String
+  status       String      @default("RECEIVED")
+  total        Int
+  note         String      @default("")
+  items        OrderItem[]
+  payment      Payment?
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  @@index([storeId])
+  @@index([customerId])
+  @@index([status])
+}
+
+model Payment {
+  id        String    @id @default(cuid())
+  storeId   String
+  store     Store     @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  orderId   String    @unique
+  order     Order     @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  status    String    @default("UNPAID")
+  method    String    @default("NONE")
+  amount    Int
+  note      String    @default("")
+  paidAt    DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@index([storeId])
+  @@index([status])
+}
+
+model OrderItem {
+  id        String  @id @default(cuid())
+  orderId   String
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId String?
+  product   Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+  name      String
+  price     Int
+  quantity  Int
+}
+
+model ModuleSetting {
+  id          String   @id @default(cuid())
+  storeId     String
+  store       Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  key         String
+  name        String
+  description String
+  enabled     Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([storeId, key])
+}
+
+model NotificationSetting {
+  id                String   @id @default(cuid())
+  storeId           String   @unique
+  store             Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  enabled           Boolean  @default(false)
+  smtpHost          String   @default("")
+  smtpPort          Int      @default(587)
+  smtpUser          String   @default("")
+  smtpPass          String   @default("")
+  mailFrom          String   @default("")
+  notificationEmail String   @default("")
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+model ReplyTemplate {
+  id          String   @id @default(cuid())
+  storeId     String
+  store       Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  title       String
+  body        String
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([storeId])
+}
+
+model StockMovement {
+  id          String   @id @default(cuid())
+  storeId     String
+  store       Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  productId   String
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  type        String
+  quantity    Int
+  stockBefore Int
+  stockAfter  Int
+  note        String   @default("")
+  createdAt   DateTime @default(now())
+
+  @@index([storeId])
+  @@index([productId])
+  @@index([type])
+}
+
+model InternalNote {
+  id         String   @id @default(cuid())
+  storeId    String
+  store      Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  targetType String
+  targetId   String
+  author     String   @default("管理者")
+  body       String
+  createdAt  DateTime @default(now())
+
+  @@index([storeId])
+  @@index([targetType, targetId])
+}
+
+model AdminUser {
+  id        String   @id @default(cuid())
+  storeId   String
+  store     Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  name      String
+  email     String
+  password  String
+  role      String   @default("staff")
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([storeId, email])
+  @@index([storeId])
+  @@index([role])
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  storeId    String
+  store      Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  actor      String   @default("system")
+  action     String
+  targetType String
+  targetId   String
+  summary    String
+  createdAt  DateTime @default(now())
+
+  @@index([storeId])
+  @@index([targetType, targetId])
+  @@index([action])
+}
