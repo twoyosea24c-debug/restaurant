@@ -72,7 +72,7 @@ export default async function PublicPage({ searchParams }: { searchParams: Promi
           </label>
           <label>
             希望日時
-            <input name="startAt" type="datetime-local" required />
+            <input name="startAt" type="datetime-local" step={900} required />
           </label>
           <label>
             名前

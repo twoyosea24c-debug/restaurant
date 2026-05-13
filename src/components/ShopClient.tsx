@@ -68,7 +68,7 @@ export function ShopClient({ products }: { products: Product[] }) {
           items: cart.map((item) => ({ productId: item.productId, quantity: item.quantity })),
         });
         setCart([]);
-        setMessage("注文を受け付けました。");
+        setMessage("ご注文ありがとうございます。");
       } catch (error) {
         setMessage(error instanceof Error ? error.message : "注文に失敗しました。");
       }

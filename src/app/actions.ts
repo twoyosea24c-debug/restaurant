@@ -318,6 +318,9 @@ export async function createBooking(formData: FormData) {
   if (Number.isNaN(startAt.getTime())) {
     redirectWithError(formData, "/#booking", "希望日時を入力してください。");
   }
+  if (startAt.getMinutes() % 15 !== 0) {
+    redirectWithError(formData, "/#booking", "予約時間は15分単位で選択してください。");
+  }
   const store = await prisma.store.findUniqueOrThrow({ where: { id: defaultStoreId } });
   const customer = await findOrCreateCustomer({
     name: text(formData, "name"),
