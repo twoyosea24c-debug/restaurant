@@ -428,55 +428,67 @@ export default async function Home({
             <h2>予約管理</h2>
             <span>受付・変更依頼・キャンセル依頼</span>
           </div>
-          <div className="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>予約番号</th>
-                  <th>顧客</th>
-                  <th>メニュー</th>
-                  <th>希望日時</th>
-                  <th>状態</th>
-                  <th>依頼メモ</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredBookings.map((booking) => (
-                  <tr key={booking.id}>
-                    <td>
-                      <strong>{booking.bookingNumber}</strong>
-                      <p>
-                        <a className="secondary-action" href={`/admin/bookings/${booking.id}`}>
-                          詳細
-                        </a>
-                      </p>
-                    </td>
-                    <td>{booking.customerName}</td>
-                    <td>{booking.service.name}</td>
-                    <td>{booking.startAt.toLocaleString("ja-JP")}</td>
-                    <td>
-                      <form action={updateBookingStatus}>
-                        <input name="bookingId" type="hidden" value={booking.id} />
-                        <select name="status" defaultValue={booking.status}>
-                          {bookingStatuses.map((status) => (
-                            <option key={status} value={status}>
-                              {bookingStatusLabels[status]}
-                            </option>
-                          ))}
-                        </select>
-                        <button className="secondary-action" type="submit" style={{ marginTop: 8 }}>
-                          更新
-                        </button>
-                      </form>
-                    </td>
-                    <td>
-                      <span className="status-badge">{bookingStatusLabels[toBookingStatusKey(booking.status)]}</span>
-                      <p>{booking.requestNote || booking.note || "-"}</p>
-                    </td>
+          <div className="switch-list booking-admin-list">
+            <div className="product-view-switch" aria-label="予約一覧の表示切替">
+              <input id="booking-view-list" name="bookingView" type="radio" defaultChecked />
+              <label htmlFor="booking-view-list">縦列</label>
+              <input id="booking-view-card" name="bookingView" type="radio" />
+              <label htmlFor="booking-view-card">カード</label>
+            </div>
+            <div className="table-wrap switch-table">
+              <table className="compact-admin-table">
+                <thead>
+                  <tr>
+                    <th>予約番号</th>
+                    <th>顧客</th>
+                    <th>メニュー</th>
+                    <th>希望日時</th>
+                    <th>状態</th>
+                    <th></th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {filteredBookings.map((booking) => (
+                    <tr key={booking.id}>
+                      <td><strong>{booking.bookingNumber}</strong></td>
+                      <td>{booking.customerName}</td>
+                      <td>{booking.service.name}</td>
+                      <td>{booking.startAt.toLocaleString("ja-JP")}</td>
+                      <td><span className="status-badge">{bookingStatusLabels[toBookingStatusKey(booking.status)]}</span></td>
+                      <td><a className="secondary-action" href={`/admin/bookings/${booking.id}`}>詳細</a></td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <div className="switch-card-list">
+              {filteredBookings.map((booking) => (
+                <article className="switch-card" key={booking.id}>
+                  <div className="switch-card-head">
+                    <div>
+                      <h3>{booking.bookingNumber}</h3>
+                      <p>{booking.customerName} / {booking.service.name}</p>
+                    </div>
+                    <span className="status-badge">{bookingStatusLabels[toBookingStatusKey(booking.status)]}</span>
+                  </div>
+                  <p className="empty-state">{booking.startAt.toLocaleString("ja-JP")} / {booking.requestNote || booking.note || "メモなし"}</p>
+                  <form action={updateBookingStatus} className="settings-form">
+                    <input name="bookingId" type="hidden" value={booking.id} />
+                    <input name="returnTo" type="hidden" value="/admin#bookings" />
+                    <label>
+                      状態
+                      <select name="status" defaultValue={booking.status}>
+                        {bookingStatuses.map((status) => (
+                          <option key={status} value={status}>{bookingStatusLabels[status]}</option>
+                        ))}
+                      </select>
+                    </label>
+                    <button type="submit">更新</button>
+                  </form>
+                  <a className="secondary-action" href={`/admin/bookings/${booking.id}`}>詳細ページ</a>
+                </article>
+              ))}
+            </div>
           </div>
         </section>
 
@@ -616,59 +628,71 @@ export default async function Home({
               <strong>{filteredInquiries.filter((inquiry) => inquiry.status === "NEW").length}件</strong>
             </div>
           </div>
-          <div className="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>問い合わせID</th>
-                  <th>顧客</th>
-                  <th>件名</th>
-                  <th>内容</th>
-                  <th>状態</th>
-                  <th>対応メモ</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredInquiries.map((inquiry) => (
-                  <tr key={inquiry.id}>
-                    <td>
-                      <strong>{inquiry.inquiryNumber}</strong>
-                      <p>
-                        <a className="secondary-action" href={`/admin/inquiries/${inquiry.id}`}>
-                          詳細
-                        </a>
-                      </p>
-                    </td>
-                    <td>{inquiry.customerName}</td>
-                    <td>{inquiry.subject}</td>
-                    <td>{inquiry.message}</td>
-                    <td>
-                      <span className="status-badge">{inquiryStatusLabels[toInquiryStatusKey(inquiry.status)]}</span>
-                    </td>
-                    <td>
-                      <form action={updateInquiryStatus} className="settings-form">
-                        <input name="inquiryId" type="hidden" value={inquiry.id} />
-                        <label>
-                          状態
-                          <select name="status" defaultValue={inquiry.status}>
-                            {inquiryStatuses.map((status) => (
-                              <option key={status} value={status}>
-                                {inquiryStatusLabels[status]}
-                              </option>
-                            ))}
-                          </select>
-                        </label>
-                        <label>
-                          メモ
-                          <textarea name="responseNote" rows={3} defaultValue={inquiry.responseNote} />
-                        </label>
-                        <button type="submit">保存</button>
-                      </form>
-                    </td>
+          <div className="switch-list inquiry-admin-list">
+            <div className="product-view-switch" aria-label="問い合わせ一覧の表示切替">
+              <input id="inquiry-view-list" name="inquiryView" type="radio" defaultChecked />
+              <label htmlFor="inquiry-view-list">縦列</label>
+              <input id="inquiry-view-card" name="inquiryView" type="radio" />
+              <label htmlFor="inquiry-view-card">カード</label>
+            </div>
+            <div className="table-wrap switch-table">
+              <table className="compact-admin-table">
+                <thead>
+                  <tr>
+                    <th>問い合わせID</th>
+                    <th>顧客</th>
+                    <th>件名</th>
+                    <th>内容</th>
+                    <th>状態</th>
+                    <th></th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {filteredInquiries.map((inquiry) => (
+                    <tr key={inquiry.id}>
+                      <td><strong>{inquiry.inquiryNumber}</strong></td>
+                      <td>{inquiry.customerName}</td>
+                      <td>{inquiry.subject}</td>
+                      <td className="compact-text">{inquiry.message}</td>
+                      <td><span className="status-badge">{inquiryStatusLabels[toInquiryStatusKey(inquiry.status)]}</span></td>
+                      <td><a className="secondary-action" href={`/admin/inquiries/${inquiry.id}`}>詳細</a></td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <div className="switch-card-list">
+              {filteredInquiries.map((inquiry) => (
+                <article className="switch-card" key={inquiry.id}>
+                  <div className="switch-card-head">
+                    <div>
+                      <h3>{inquiry.subject}</h3>
+                      <p>{inquiry.inquiryNumber} / {inquiry.customerName}</p>
+                    </div>
+                    <span className="status-badge">{inquiryStatusLabels[toInquiryStatusKey(inquiry.status)]}</span>
+                  </div>
+                  <p className="empty-state">{inquiry.message}</p>
+                  <form action={updateInquiryStatus} className="settings-form">
+                    <input name="inquiryId" type="hidden" value={inquiry.id} />
+                    <input name="returnTo" type="hidden" value="/admin#inquiries" />
+                    <label>
+                      状態
+                      <select name="status" defaultValue={inquiry.status}>
+                        {inquiryStatuses.map((status) => (
+                          <option key={status} value={status}>{inquiryStatusLabels[status]}</option>
+                        ))}
+                      </select>
+                    </label>
+                    <label>
+                      メモ
+                      <textarea name="responseNote" rows={3} defaultValue={inquiry.responseNote} />
+                    </label>
+                    <button type="submit">保存</button>
+                  </form>
+                  <a className="secondary-action" href={`/admin/inquiries/${inquiry.id}`}>詳細ページ</a>
+                </article>
+              ))}
+            </div>
           </div>
         </section>
 
@@ -688,33 +712,66 @@ export default async function Home({
             </label>
             <button type="submit">追加</button>
           </form>
-          <div className="module-grid" style={{ marginTop: 18 }}>
-            {data.replyTemplates.map((template) => (
-              <article className="module-card" key={template.id}>
-                <h3>{template.title}</h3>
-                <p>{template.body}</p>
-                <span className="module-status">{template.active ? "有効" : "無効"}</span>
-                <form action={updateReplyTemplate} className="settings-form" style={{ marginTop: 12 }}>
-                  <input name="templateId" type="hidden" value={template.id} />
-                  <label>
-                    タイトル
-                    <input name="title" defaultValue={template.title} required />
-                  </label>
-                  <label>
-                    本文
-                    <textarea name="body" rows={4} defaultValue={template.body} required />
-                  </label>
-                  <label>
-                    状態
-                    <select name="active" defaultValue={String(template.active)}>
-                      <option value="true">有効</option>
-                      <option value="false">無効</option>
-                    </select>
-                  </label>
-                  <button type="submit">保存</button>
-                </form>
-              </article>
-            ))}
+          <div className="switch-list template-admin-list">
+            <div className="product-view-switch" aria-label="返信テンプレート一覧の表示切替">
+              <input id="template-view-list" name="templateView" type="radio" defaultChecked />
+              <label htmlFor="template-view-list">縦列</label>
+              <input id="template-view-card" name="templateView" type="radio" />
+              <label htmlFor="template-view-card">カード</label>
+            </div>
+            <div className="table-wrap switch-table">
+              <table className="compact-admin-table">
+                <thead>
+                  <tr>
+                    <th>タイトル</th>
+                    <th>本文</th>
+                    <th>状態</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {data.replyTemplates.map((template) => (
+                    <tr key={template.id}>
+                      <td><strong>{template.title}</strong></td>
+                      <td className="compact-text">{template.body}</td>
+                      <td><span className="module-status">{template.active ? "有効" : "無効"}</span></td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <div className="switch-card-list">
+              {data.replyTemplates.map((template) => (
+                <article className="switch-card" key={template.id}>
+                  <div className="switch-card-head">
+                    <div>
+                      <h3>{template.title}</h3>
+                      <p>{template.body}</p>
+                    </div>
+                    <span className="module-status">{template.active ? "有効" : "無効"}</span>
+                  </div>
+                  <form action={updateReplyTemplate} className="settings-form">
+                    <input name="templateId" type="hidden" value={template.id} />
+                    <input name="returnTo" type="hidden" value="/admin#templates" />
+                    <label>
+                      タイトル
+                      <input name="title" defaultValue={template.title} required />
+                    </label>
+                    <label>
+                      本文
+                      <textarea name="body" rows={4} defaultValue={template.body} required />
+                    </label>
+                    <label>
+                      状態
+                      <select name="active" defaultValue={String(template.active)}>
+                        <option value="true">有効</option>
+                        <option value="false">無効</option>
+                      </select>
+                    </label>
+                    <button type="submit">保存</button>
+                  </form>
+                </article>
+              ))}
+            </div>
           </div>
         </section>
 
@@ -940,35 +997,58 @@ export default async function Home({
             <button type="submit">記録</button>
           </form>
 
-          <div className="table-wrap" style={{ marginTop: 18 }}>
-            <table>
-              <thead>
-                <tr>
-                  <th>日時</th>
-                  <th>商品</th>
-                  <th>種別</th>
-                  <th>数量</th>
-                  <th>在庫</th>
-                  <th>メモ</th>
-                </tr>
-              </thead>
-              <tbody>
-                {data.stockMovements.map((movement) => (
-                  <tr key={movement.id}>
-                    <td>{movement.createdAt.toLocaleString("ja-JP")}</td>
-                    <td>{movement.product.name}</td>
-                    <td>
-                      <span className="status-badge">{stockMovementTypeLabels[toStockMovementTypeKey(movement.type)]}</span>
-                    </td>
-                    <td>{movement.quantity}</td>
-                    <td>
-                      {movement.stockBefore} → {movement.stockAfter}
-                    </td>
-                    <td>{movement.note || "-"}</td>
+          <div className="switch-list stock-admin-list">
+            <div className="product-view-switch" aria-label="在庫履歴の表示切替">
+              <input id="stock-view-list" name="stockHistoryView" type="radio" defaultChecked />
+              <label htmlFor="stock-view-list">縦列</label>
+              <input id="stock-view-card" name="stockHistoryView" type="radio" />
+              <label htmlFor="stock-view-card">カード</label>
+            </div>
+            <div className="table-wrap switch-table">
+              <table className="compact-admin-table">
+                <thead>
+                  <tr>
+                    <th>日時</th>
+                    <th>商品</th>
+                    <th>種別</th>
+                    <th>数量</th>
+                    <th>在庫</th>
+                    <th>メモ</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {data.stockMovements.map((movement) => (
+                    <tr key={movement.id}>
+                      <td>{movement.createdAt.toLocaleString("ja-JP")}</td>
+                      <td>{movement.product.name}</td>
+                      <td><span className="status-badge">{stockMovementTypeLabels[toStockMovementTypeKey(movement.type)]}</span></td>
+                      <td>{movement.quantity}</td>
+                      <td>{movement.stockBefore} → {movement.stockAfter}</td>
+                      <td className="compact-text">{movement.note || "-"}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <div className="switch-card-list">
+              {data.stockMovements.map((movement) => (
+                <article className="switch-card" key={movement.id}>
+                  <div className="switch-card-head">
+                    <div>
+                      <h3>{movement.product.name}</h3>
+                      <p>{movement.createdAt.toLocaleString("ja-JP")}</p>
+                    </div>
+                    <span className="status-badge">{stockMovementTypeLabels[toStockMovementTypeKey(movement.type)]}</span>
+                  </div>
+                  <div className="summary-strip customer-card-summary">
+                    <div><p>数量</p><strong>{movement.quantity}</strong></div>
+                    <div><p>変更前</p><strong>{movement.stockBefore}</strong></div>
+                    <div><p>変更後</p><strong>{movement.stockAfter}</strong></div>
+                  </div>
+                  <p className="empty-state">{movement.note || "メモなし"}</p>
+                </article>
+              ))}
+            </div>
           </div>
         </section>
 
@@ -987,58 +1067,72 @@ export default async function Home({
               <strong>{formatPrice(filteredOrders.reduce((sum, order) => sum + order.total, 0))}</strong>
             </div>
           </div>
-          <div className="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>注文ID</th>
-                  <th>顧客</th>
-                  <th>商品</th>
-                  <th>合計</th>
-                  <th>状態</th>
-                  <th>決済</th>
-                  <th>メモ</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredOrders.map((order) => (
-                  <tr key={order.id}>
-                    <td>
-                      <strong>{order.orderNumber}</strong>
-                      <p>
-                        <a className="secondary-action" href={`/admin/orders/${order.id}`}>
-                          詳細
-                        </a>
-                      </p>
-                    </td>
-                    <td>{order.customerName}</td>
-                    <td>{order.items.map((item) => `${item.name} x ${item.quantity}`).join(" / ")}</td>
-                    <td>{formatPrice(order.total)}</td>
-                    <td>
-                      <form action={updateOrderStatus}>
-                        <input name="orderId" type="hidden" value={order.id} />
-                        <select name="status" defaultValue={order.status}>
-                          {orderStatuses.map((status) => (
-                            <option key={status} value={status}>
-                              {statusLabels[status]}
-                            </option>
-                          ))}
-                        </select>
-                        <button className="secondary-action" type="submit" style={{ marginTop: 8 }}>
-                          更新
-                        </button>
-                      </form>
-                    </td>
-                    <td>
-                      <span className="status-badge">
-                        {paymentStatusLabels[toPaymentStatusKey(order.payment?.status)]}
-                      </span>
-                    </td>
-                    <td>{order.note || "-"}</td>
+          <div className="switch-list order-admin-list">
+            <div className="product-view-switch" aria-label="注文一覧の表示切替">
+              <input id="order-view-list" name="orderView" type="radio" defaultChecked />
+              <label htmlFor="order-view-list">縦列</label>
+              <input id="order-view-card" name="orderView" type="radio" />
+              <label htmlFor="order-view-card">カード</label>
+            </div>
+            <div className="table-wrap switch-table">
+              <table className="compact-admin-table">
+                <thead>
+                  <tr>
+                    <th>注文ID</th>
+                    <th>顧客</th>
+                    <th>商品</th>
+                    <th>合計</th>
+                    <th>状態</th>
+                    <th>決済</th>
+                    <th></th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {filteredOrders.map((order) => (
+                    <tr key={order.id}>
+                      <td><strong>{order.orderNumber}</strong></td>
+                      <td>{order.customerName}</td>
+                      <td className="compact-text">{order.items.map((item) => `${item.name} x ${item.quantity}`).join(" / ")}</td>
+                      <td>{formatPrice(order.total)}</td>
+                      <td><span className="status-badge">{statusLabels[toOrderStatusKey(order.status)]}</span></td>
+                      <td><span className="status-badge">{paymentStatusLabels[toPaymentStatusKey(order.payment?.status)]}</span></td>
+                      <td><a className="secondary-action" href={`/admin/orders/${order.id}`}>詳細</a></td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <div className="switch-card-list">
+              {filteredOrders.map((order) => (
+                <article className="switch-card" key={order.id}>
+                  <div className="switch-card-head">
+                    <div>
+                      <h3>{order.orderNumber}</h3>
+                      <p>{order.customerName} / {order.items.map((item) => `${item.name} x ${item.quantity}`).join("、")}</p>
+                    </div>
+                    <strong>{formatPrice(order.total)}</strong>
+                  </div>
+                  <div className="table-actions">
+                    <span className="status-badge">{statusLabels[toOrderStatusKey(order.status)]}</span>
+                    <span className="status-badge">{paymentStatusLabels[toPaymentStatusKey(order.payment?.status)]}</span>
+                  </div>
+                  <form action={updateOrderStatus} className="settings-form">
+                    <input name="orderId" type="hidden" value={order.id} />
+                    <input name="returnTo" type="hidden" value="/admin#orders" />
+                    <label>
+                      状態
+                      <select name="status" defaultValue={order.status}>
+                        {orderStatuses.map((status) => (
+                          <option key={status} value={status}>{statusLabels[status]}</option>
+                        ))}
+                      </select>
+                    </label>
+                    <button type="submit">更新</button>
+                  </form>
+                  <a className="secondary-action" href={`/admin/orders/${order.id}`}>詳細ページ</a>
+                </article>
+              ))}
+            </div>
           </div>
         </section>
 
@@ -1047,33 +1141,51 @@ export default async function Home({
             <h2>監査ログ</h2>
             <span>直近50件</span>
           </div>
-          <div className="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>日時</th>
-                  <th>担当</th>
-                  <th>操作</th>
-                  <th>対象</th>
-                  <th>内容</th>
-                </tr>
-              </thead>
-              <tbody>
-                {data.auditLogs.map((log) => (
-                  <tr key={log.id}>
-                    <td>{log.createdAt.toLocaleString("ja-JP")}</td>
-                    <td>{log.actor}</td>
-                    <td>
-                      <span className="status-badge">{log.action}</span>
-                    </td>
-                    <td>
-                      {log.targetType} / {log.targetId}
-                    </td>
-                    <td>{log.summary}</td>
+          <div className="switch-list audit-admin-list">
+            <div className="product-view-switch" aria-label="監査ログの表示切替">
+              <input id="audit-view-list" name="auditView" type="radio" defaultChecked />
+              <label htmlFor="audit-view-list">縦列</label>
+              <input id="audit-view-card" name="auditView" type="radio" />
+              <label htmlFor="audit-view-card">カード</label>
+            </div>
+            <div className="table-wrap switch-table">
+              <table className="compact-admin-table">
+                <thead>
+                  <tr>
+                    <th>日時</th>
+                    <th>担当</th>
+                    <th>操作</th>
+                    <th>対象</th>
+                    <th>内容</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {data.auditLogs.map((log) => (
+                    <tr key={log.id}>
+                      <td>{log.createdAt.toLocaleString("ja-JP")}</td>
+                      <td>{log.actor}</td>
+                      <td><span className="status-badge">{log.action}</span></td>
+                      <td>{log.targetType} / {log.targetId}</td>
+                      <td className="compact-text">{log.summary}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <div className="switch-card-list">
+              {data.auditLogs.map((log) => (
+                <article className="switch-card" key={log.id}>
+                  <div className="switch-card-head">
+                    <div>
+                      <h3>{log.summary}</h3>
+                      <p>{log.createdAt.toLocaleString("ja-JP")} / {log.actor}</p>
+                    </div>
+                    <span className="status-badge">{log.action}</span>
+                  </div>
+                  <p className="empty-state">{log.targetType} / {log.targetId}</p>
+                </article>
+              ))}
+            </div>
           </div>
           {data.auditLogs.length === 0 ? <p className="empty-state">監査ログはまだありません。</p> : null}
         </section>
@@ -1126,20 +1238,61 @@ export default async function Home({
               </label>
               <button type="submit">反映</button>
             </form>
-            <div className="module-grid" style={{ marginTop: 18 }}>
-              {data.modules.map((module) => (
-                <article className="module-card" key={module.key}>
-                  <h3>{module.name}</h3>
-                  <p>{module.description}</p>
-                  <span className="module-status">{module.enabled ? "有効" : "無効"}</span>
-                  <form action={toggleModule} style={{ marginTop: 12 }}>
-                    <input name="key" type="hidden" value={module.key} />
-                    <button className="secondary-action" type="submit">
-                      {module.enabled ? "停止" : "有効化"}
-                    </button>
-                  </form>
-                </article>
-              ))}
+            <div className="switch-list module-admin-list">
+              <div className="product-view-switch" aria-label="機能一覧の表示切替">
+                <input id="module-view-list" name="moduleView" type="radio" defaultChecked />
+                <label htmlFor="module-view-list">縦列</label>
+                <input id="module-view-card" name="moduleView" type="radio" />
+                <label htmlFor="module-view-card">カード</label>
+              </div>
+              <div className="table-wrap switch-table">
+                <table className="compact-admin-table">
+                  <thead>
+                    <tr>
+                      <th>機能</th>
+                      <th>説明</th>
+                      <th>状態</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {data.modules.map((module) => (
+                      <tr key={module.key}>
+                        <td><strong>{module.name}</strong></td>
+                        <td className="compact-text">{module.description}</td>
+                        <td><span className="module-status">{module.enabled ? "有効" : "無効"}</span></td>
+                        <td>
+                          <form action={toggleModule}>
+                            <input name="key" type="hidden" value={module.key} />
+                            <input name="returnTo" type="hidden" value="/admin#settings" />
+                            <button className="secondary-action" type="submit">{module.enabled ? "停止" : "有効化"}</button>
+                          </form>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <div className="switch-card-list">
+                {data.modules.map((module) => (
+                  <article className="switch-card" key={module.key}>
+                    <div className="switch-card-head">
+                      <div>
+                        <h3>{module.name}</h3>
+                        <p>{module.description}</p>
+                      </div>
+                      <span className="module-status">{module.enabled ? "有効" : "無効"}</span>
+                    </div>
+                    <form action={toggleModule}>
+                      <input name="key" type="hidden" value={module.key} />
+                      <input name="returnTo" type="hidden" value="/admin#settings" />
+                      <button className="secondary-action" type="submit">
+                        {module.enabled ? "停止" : "有効化"}
+                      </button>
+                    </form>
+                  </article>
+                ))}
+              </div>
             </div>
           </section>
 
@@ -1268,41 +1421,76 @@ export default async function Home({
               </label>
               <button type="submit">追加</button>
             </form>
-            <div className="module-grid" style={{ marginTop: 18 }}>
-              {data.adminUsers.map((user) => (
-                <article className="module-card" key={user.id}>
-                  <h3>{user.name}</h3>
-                  <p>{user.email}</p>
-                  <span className="module-status">{user.active ? user.role : "停止中"}</span>
-                  <form action={updateAdminUser} className="settings-form" style={{ marginTop: 12 }}>
-                    <input name="adminUserId" type="hidden" value={user.id} />
-                    <label>
-                      名前
-                      <input name="name" defaultValue={user.name} required />
-                    </label>
-                    <label>
-                      権限
-                      <select name="role" defaultValue={user.role}>
-                        <option value="manager">管理者</option>
-                        <option value="staff">スタッフ</option>
-                        <option value="viewer">閲覧のみ</option>
-                      </select>
-                    </label>
-                    <label>
-                      状態
-                      <select name="active" defaultValue={String(user.active)}>
-                        <option value="true">有効</option>
-                        <option value="false">停止</option>
-                      </select>
-                    </label>
-                    <label>
-                      新パスワード
-                      <input name="password" type="password" placeholder="変更時のみ" />
-                    </label>
-                    <button type="submit">保存</button>
-                  </form>
-                </article>
-              ))}
+            <div className="switch-list staff-admin-list">
+              <div className="product-view-switch" aria-label="スタッフ一覧の表示切替">
+                <input id="staff-view-list" name="staffView" type="radio" defaultChecked />
+                <label htmlFor="staff-view-list">縦列</label>
+                <input id="staff-view-card" name="staffView" type="radio" />
+                <label htmlFor="staff-view-card">カード</label>
+              </div>
+              <div className="table-wrap switch-table">
+                <table className="compact-admin-table">
+                  <thead>
+                    <tr>
+                      <th>名前</th>
+                      <th>メール</th>
+                      <th>権限</th>
+                      <th>状態</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {data.adminUsers.map((user) => (
+                      <tr key={user.id}>
+                        <td><strong>{user.name}</strong></td>
+                        <td>{user.email}</td>
+                        <td>{user.role}</td>
+                        <td><span className="module-status">{user.active ? "有効" : "停止中"}</span></td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <div className="switch-card-list">
+                {data.adminUsers.map((user) => (
+                  <article className="switch-card" key={user.id}>
+                    <div className="switch-card-head">
+                      <div>
+                        <h3>{user.name}</h3>
+                        <p>{user.email}</p>
+                      </div>
+                      <span className="module-status">{user.active ? user.role : "停止中"}</span>
+                    </div>
+                    <form action={updateAdminUser} className="settings-form">
+                      <input name="adminUserId" type="hidden" value={user.id} />
+                      <input name="returnTo" type="hidden" value="/admin#settings" />
+                      <label>
+                        名前
+                        <input name="name" defaultValue={user.name} required />
+                      </label>
+                      <label>
+                        権限
+                        <select name="role" defaultValue={user.role}>
+                          <option value="manager">管理者</option>
+                          <option value="staff">スタッフ</option>
+                          <option value="viewer">閲覧のみ</option>
+                        </select>
+                      </label>
+                      <label>
+                        状態
+                        <select name="active" defaultValue={String(user.active)}>
+                          <option value="true">有効</option>
+                          <option value="false">停止</option>
+                        </select>
+                      </label>
+                      <label>
+                        新パスワード
+                        <input name="password" type="password" placeholder="変更時のみ" />
+                      </label>
+                      <button type="submit">保存</button>
+                    </form>
+                  </article>
+                ))}
+              </div>
             </div>
           </section>
         </section>

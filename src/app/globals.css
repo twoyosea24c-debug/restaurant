@@ -1594,6 +1594,83 @@ tr:hover td {
   gap: 10px;
 }
 
+/* Shared list/card view switch */
+.switch-list {
+  display: grid;
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.switch-table {
+  margin-top: 0;
+}
+
+.compact-admin-table th,
+.compact-admin-table td {
+  padding-top: 9px;
+  padding-bottom: 9px;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.compact-text {
+  max-width: 320px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.switch-card-list {
+  display: none;
+  gap: 12px;
+}
+
+.switch-card {
+  display: grid;
+  gap: 14px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #ffffff;
+  padding: 16px;
+}
+
+.switch-card-head {
+  display: grid;
+  gap: 10px;
+}
+
+.switch-card-head h3 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.switch-card-head p {
+  margin: 5px 0 0;
+  color: var(--muted);
+}
+
+.booking-admin-list:has(#booking-view-card:checked) .switch-table,
+.inquiry-admin-list:has(#inquiry-view-card:checked) .switch-table,
+.template-admin-list:has(#template-view-card:checked) .switch-table,
+.stock-admin-list:has(#stock-view-card:checked) .switch-table,
+.order-admin-list:has(#order-view-card:checked) .switch-table,
+.audit-admin-list:has(#audit-view-card:checked) .switch-table,
+.module-admin-list:has(#module-view-card:checked) .switch-table,
+.staff-admin-list:has(#staff-view-card:checked) .switch-table {
+  display: none;
+}
+
+.booking-admin-list:has(#booking-view-card:checked) .switch-card-list,
+.inquiry-admin-list:has(#inquiry-view-card:checked) .switch-card-list,
+.template-admin-list:has(#template-view-card:checked) .switch-card-list,
+.stock-admin-list:has(#stock-view-card:checked) .switch-card-list,
+.order-admin-list:has(#order-view-card:checked) .switch-card-list,
+.audit-admin-list:has(#audit-view-card:checked) .switch-card-list,
+.module-admin-list:has(#module-view-card:checked) .switch-card-list,
+.staff-admin-list:has(#staff-view-card:checked) .switch-card-list {
+  display: grid;
+}
+
 /* Customer admin */
 .customer-admin-list {
   display: grid;
@@ -1718,6 +1795,11 @@ tr:hover td {
   }
 
   .customer-card-head {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: start;
+  }
+
+  .switch-card-head {
     grid-template-columns: minmax(0, 1fr) auto;
     align-items: start;
   }
