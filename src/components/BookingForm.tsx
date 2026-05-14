@@ -33,6 +33,7 @@ export function BookingForm({
 
   return (
     <form action={createBooking} className="form-grid booking-form-grid">
+      <p className="form-intro booking-form-intro">メニュー、日時、連絡先の順に入力してください。予約状況を確認して店舗からご連絡します。</p>
       <label className="booking-service-field">
         <span className="field-label">メニュー <RequiredMark /></span>
         <select name="serviceId" required>
@@ -73,7 +74,7 @@ export function BookingForm({
         <input name="phone" required />
       </label>
       <label>
-        メモ
+        <span className="field-label">メモ</span>
         <input name="note" placeholder="希望や相談内容" />
       </label>
       <button type="submit">予約する</button>

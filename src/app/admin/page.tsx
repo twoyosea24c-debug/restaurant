@@ -203,6 +203,20 @@ export default async function Home({
         {notice ? <p className="notice-banner">{notice}</p> : null}
         {error ? <p className="notice-banner error-banner">{error}</p> : null}
 
+        <section className="operations-focus" aria-label="今日の確認">
+          <div>
+            <p className="eyebrow">Today</p>
+            <h2>今日の確認</h2>
+            <p>未対応、注文、低在庫を先に確認できます。</p>
+          </div>
+          <div className="operations-actions">
+            <a className="secondary-action" href="#bookings">予約 {filteredBookings.length}件</a>
+            <a className="secondary-action" href="#orders">注文 {filteredOrders.length}件</a>
+            <a className="secondary-action" href="#inquiries">問い合わせ {filteredInquiries.length}件</a>
+            <a className="secondary-action" href="#stock">低在庫 {data.dashboard.lowStockProducts.length}件</a>
+          </div>
+        </section>
+
         <details className="panel collapsible-panel" id="launch-checklist" open>
           <summary className="panel-head collapsible-summary">
             <h2>公開前チェックリスト</h2>

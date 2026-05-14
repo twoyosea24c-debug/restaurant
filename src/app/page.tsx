@@ -28,6 +28,16 @@ function formatDateInput(date: Date) {
   return `${year}-${month}-${day}`;
 }
 
+function formatClosedDays(value: string) {
+  const labels = ["日", "月", "火", "水", "木", "金", "土"];
+  const days = value
+    .split(",")
+    .map((day) => Number(day.trim()))
+    .filter((day) => Number.isInteger(day) && day >= 0 && day <= 6)
+    .map((day) => labels[day]);
+  return days.length > 0 ? `${days.join("・")}曜` : "不定休";
+}
+
 export default async function PublicPage({ searchParams }: { searchParams: Promise<{ notice?: string; error?: string }> }) {
   const { notice, error } = await searchParams;
   const data = await getAppData();
@@ -49,9 +59,10 @@ export default async function PublicPage({ searchParams }: { searchParams: Promi
       time: formatTimeOption(booking.startAt.getHours() * 60 + booking.startAt.getMinutes()),
     }));
   const publicPhone = data.store.phone === "03-0000-0000" ? "店舗へお問い合わせください" : data.store.phone;
+  const businessHours = `${data.store.businessOpenTime} - ${data.store.businessCloseTime}`;
+  const closedDays = formatClosedDays(data.store.closedWeekdays);
   const enabledSections = data.pageSections.filter((section) => section.enabled);
   const heroSection = enabledSections.find((section) => section.type === "hero");
-  const navSections = enabledSections.filter((section) => !["hero", "custom"].includes(section.type));
 
   return (
     <main className={`main public-main lp-design-${lpDesignPreset}`} style={brandStyle}>
@@ -59,10 +70,24 @@ export default async function PublicPage({ searchParams }: { searchParams: Promi
         <div className="lp-visual" aria-hidden="true">
           <span>{data.store.name.slice(0, 1)}</span>
         </div>
-        <div>
+        <div className="public-hero-content">
           <p className="eyebrow">Store</p>
           <h1>{heroSection?.title || data.store.name}</h1>
           <p>{heroSection?.body || data.store.description}</p>
+          <div className="public-hero-meta" aria-label="店舗情報">
+            <div>
+              <span>営業時間</span>
+              <strong>{businessHours}</strong>
+            </div>
+            <div>
+              <span>定休日</span>
+              <strong>{closedDays}</strong>
+            </div>
+            <div>
+              <span>予約</span>
+              <strong>15分単位</strong>
+            </div>
+          </div>
           <div className="public-actions" aria-label="主要操作">
             <a className="primary-action" href={heroSection?.buttonHref || "#booking"}>
               {heroSection?.buttonLabel || "予約する"}
@@ -87,9 +112,9 @@ export default async function PublicPage({ searchParams }: { searchParams: Promi
       </header>
 
       <nav className="mobile-action-bar" aria-label="主要操作">
-        {navSections.slice(0, 4).map((section) => (
-          <a href={`#section-${section.id}`} key={section.id}>{pageSectionTypeLabels[toPageSectionTypeKey(section.type)]}</a>
-        ))}
+        <a href="#booking">予約</a>
+        <a href="#shop">商品</a>
+        <a href="#contact">問い合わせ</a>
       </nav>
 
       {notice ? <p className="notice-banner">{notice}</p> : null}

@@ -114,7 +114,7 @@ export function ShopClient({ paymentProviderSetting, products }: { paymentProvid
         <h2>商品一覧・注文受付</h2>
         <span>{paymentEnabled ? `${paymentName}を利用` : "決済なしで注文受付"}</span>
       </summary>
-      {message && !orderComplete ? <p className="status-badge">{message}</p> : null}
+      {message && !orderComplete ? <p className="inline-feedback">{message}</p> : null}
       <div className="product-grid">
         {products.map((product) => (
           <article className="product-card" key={product.id}>
@@ -182,7 +182,7 @@ export function ShopClient({ paymentProviderSetting, products }: { paymentProvid
             <span>店舗から確認連絡をします</span>
           </summary>
           <form action={submitOrder} className="settings-form">
-            <p className="empty-state">
+            <p className="form-intro">
               {paymentEnabled
                 ? "送信後、店舗から在庫確認と決済手続きの案内を行います。"
                 : "送信後、在庫と受け取り方法を店舗からご連絡します。決済はまだ行われません。"}
@@ -201,7 +201,7 @@ export function ShopClient({ paymentProviderSetting, products }: { paymentProvid
               <input name="phone" required />
             </label>
             <label>
-              メモ
+              <span className="field-label">メモ</span>
               <textarea name="note" rows={3} />
             </label>
             <button disabled={cart.length === 0 || isPending} type="submit">
