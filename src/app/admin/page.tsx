@@ -189,11 +189,11 @@ export default async function Home({
         {notice ? <p className="notice-banner">{notice}</p> : null}
         {error ? <p className="notice-banner error-banner">{error}</p> : null}
 
-        <section className="panel" id="launch-checklist">
-          <div className="panel-head">
+        <details className="panel collapsible-panel" id="launch-checklist" open>
+          <summary className="panel-head collapsible-summary">
             <h2>公開前チェックリスト</h2>
             <span>{readinessItems.filter((item) => item.done).length}/{readinessItems.length} 完了</span>
-          </div>
+          </summary>
           <div className="checklist-grid">
             {readinessItems.map((item) => (
               <article className="checklist-item" key={item.title}>
@@ -212,13 +212,13 @@ export default async function Home({
             <a className="secondary-action" href="#products">商品を確認</a>
             <a className="secondary-action" href="/admin/backup">バックアップ取得</a>
           </div>
-        </section>
+        </details>
 
-        <section className="panel">
-          <div className="panel-head">
+        <details className="panel collapsible-panel" open>
+          <summary className="panel-head collapsible-summary">
             <h2>検索</h2>
             <span>顧客・予約・問い合わせ・注文</span>
-          </div>
+          </summary>
           <form className="filter-form" action="/admin">
             <label>
               キーワード
@@ -278,19 +278,19 @@ export default async function Home({
               顧客 {filteredCustomers.length}件 / 予約 {filteredBookings.length}件 / 問い合わせ {filteredInquiries.length}件 / 注文 {filteredOrders.length}件 / 商品 {filteredProducts.length}件
             </p>
           ) : null}
-        </section>
+        </details>
 
-        <section className="panel">
-          <div className="panel-head">
+        <details className="panel collapsible-panel" open>
+          <summary className="panel-head collapsible-summary">
             <h2>CSV出力</h2>
             <span>顧客・予約・注文</span>
-          </div>
+          </summary>
           <div className="topbar-actions">
             <a className="secondary-action" href="/admin/export/customers">顧客CSV</a>
             <a className="secondary-action" href="/admin/export/bookings">予約CSV</a>
             <a className="secondary-action" href="/admin/export/orders">注文CSV</a>
           </div>
-        </section>
+        </details>
 
         <section id="dashboard">
           <div className="metrics">
@@ -329,11 +329,11 @@ export default async function Home({
           </div>
 
           <div className="dashboard-grid" style={{ marginTop: 22 }}>
-            <section className="panel">
-              <div className="panel-head">
+            <details className="panel collapsible-panel" open>
+              <summary className="panel-head collapsible-summary">
                 <h2>注文状況</h2>
                 <span>ステータス別</span>
-              </div>
+              </summary>
               <div className="status-grid">
                 {data.dashboard.statusSummaries.map((summary) => (
                   <article className="status-card" key={summary.status}>
@@ -343,13 +343,13 @@ export default async function Home({
                   </article>
                 ))}
               </div>
-            </section>
+            </details>
 
-            <section className="panel">
-              <div className="panel-head">
+            <details className="panel collapsible-panel" open>
+              <summary className="panel-head collapsible-summary">
                 <h2>低在庫</h2>
                 <span>在庫3点以下</span>
-              </div>
+              </summary>
               {data.dashboard.lowStockProducts.length === 0 ? (
                 <p className="empty-state">低在庫の商品はありません。</p>
               ) : (
@@ -363,14 +363,14 @@ export default async function Home({
                   </article>
                 ))
               )}
-            </section>
+            </details>
           </div>
 
-          <section className="panel" style={{ marginTop: 22 }}>
-            <div className="panel-head">
+          <details className="panel collapsible-panel" style={{ marginTop: 22 }} open>
+            <summary className="panel-head collapsible-summary">
               <h2>最近の注文</h2>
               <span>直近5件</span>
-            </div>
+            </summary>
             {data.dashboard.recentOrders.length === 0 ? (
               <p className="empty-state">最近の注文はありません。</p>
             ) : (
@@ -389,16 +389,16 @@ export default async function Home({
                 </article>
               ))
             )}
-          </section>
+          </details>
         </section>
 
         <ShopClient products={data.activeProducts} />
 
-        <section id="calendar" className="panel">
-          <div className="panel-head">
+        <details id="calendar" className="panel collapsible-panel" open>
+          <summary className="panel-head collapsible-summary">
             <h2>予約カレンダー</h2>
             <span>直近7日間</span>
-          </div>
+          </summary>
           <div className="module-grid">
             {data.calendarDays.map((day) => (
               <article className="module-card" key={day.date.toISOString()}>
@@ -421,13 +421,13 @@ export default async function Home({
               </article>
             ))}
           </div>
-        </section>
+        </details>
 
-        <section id="bookings" className="panel">
-          <div className="panel-head">
+        <details id="bookings" className="panel collapsible-panel" open>
+          <summary className="panel-head collapsible-summary">
             <h2>予約管理</h2>
             <span>受付・変更依頼・キャンセル依頼</span>
-          </div>
+          </summary>
           <div className="switch-list booking-admin-list">
             <div className="product-view-switch" aria-label="予約一覧の表示切替">
               <input id="booking-view-list" name="bookingView" type="radio" defaultChecked />
@@ -490,13 +490,13 @@ export default async function Home({
               ))}
             </div>
           </div>
-        </section>
+        </details>
 
-        <section id="customers" className="panel">
-          <div className="panel-head">
+        <details id="customers" className="panel collapsible-panel" open>
+          <summary className="panel-head collapsible-summary">
             <h2>顧客</h2>
             <span>予約・注文・問い合わせの共通軸</span>
-          </div>
+          </summary>
           <form action={addCustomer} className="form-grid">
             <label>
               名前
@@ -611,13 +611,13 @@ export default async function Home({
               })}
             </div>
           </div>
-        </section>
+        </details>
 
-        <section id="inquiries" className="panel">
-          <div className="panel-head">
+        <details id="inquiries" className="panel collapsible-panel" open>
+          <summary className="panel-head collapsible-summary">
             <h2>問い合わせ管理</h2>
             <span>顧客情報と連携</span>
-          </div>
+          </summary>
           <div className="summary-strip">
             <div>
               <p>問い合わせ数</p>
@@ -694,13 +694,13 @@ export default async function Home({
               ))}
             </div>
           </div>
-        </section>
+        </details>
 
-        <section id="templates" className="panel">
-          <div className="panel-head">
+        <details id="templates" className="panel collapsible-panel" open>
+          <summary className="panel-head collapsible-summary">
             <h2>返信テンプレート</h2>
             <span>問い合わせ対応の下書き</span>
-          </div>
+          </summary>
           <form action={addReplyTemplate} className="form-grid">
             <label>
               タイトル
@@ -773,13 +773,13 @@ export default async function Home({
               ))}
             </div>
           </div>
-        </section>
+        </details>
 
-        <section id="products" className="panel">
-          <div className="panel-head">
+        <details id="products" className="panel collapsible-panel" open>
+          <summary className="panel-head collapsible-summary">
             <h2>商品管理</h2>
             <span>追加・公開設定・価格・在庫</span>
-          </div>
+          </summary>
           <div className="summary-strip">
             <div>
               <p>登録商品</p>
@@ -958,13 +958,13 @@ export default async function Home({
               </div>
             </div>
           </section>
-        </section>
+        </details>
 
-        <section id="stock" className="panel">
-          <div className="panel-head">
+        <details id="stock" className="panel collapsible-panel" open>
+          <summary className="panel-head collapsible-summary">
             <h2>在庫管理</h2>
             <span>入庫・出庫・棚卸調整</span>
-          </div>
+          </summary>
           <form action={adjustStock} className="form-grid">
             <label>
               商品
@@ -1050,13 +1050,13 @@ export default async function Home({
               ))}
             </div>
           </div>
-        </section>
+        </details>
 
-        <section id="orders" className="panel">
-          <div className="panel-head">
+        <details id="orders" className="panel collapsible-panel" open>
+          <summary className="panel-head collapsible-summary">
             <h2>注文管理</h2>
             <span>予約と同じ顧客情報に紐付く注文</span>
-          </div>
+          </summary>
           <div className="summary-strip">
             <div>
               <p>注文数</p>
@@ -1134,13 +1134,13 @@ export default async function Home({
               ))}
             </div>
           </div>
-        </section>
+        </details>
 
-        <section id="audit" className="panel">
-          <div className="panel-head">
+        <details id="audit" className="panel collapsible-panel" open>
+          <summary className="panel-head collapsible-summary">
             <h2>監査ログ</h2>
             <span>直近50件</span>
-          </div>
+          </summary>
           <div className="switch-list audit-admin-list">
             <div className="product-view-switch" aria-label="監査ログの表示切替">
               <input id="audit-view-list" name="auditView" type="radio" defaultChecked />
@@ -1188,14 +1188,14 @@ export default async function Home({
             </div>
           </div>
           {data.auditLogs.length === 0 ? <p className="empty-state">監査ログはまだありません。</p> : null}
-        </section>
+        </details>
 
         <section id="settings" className="dashboard-grid">
-          <section className="panel">
-            <div className="panel-head">
+          <details className="panel collapsible-panel" open>
+            <summary className="panel-head collapsible-summary">
               <h2>店舗情報</h2>
               <span>公開ページと管理画面で共通利用</span>
-            </div>
+            </summary>
             <form action={saveStore} className="settings-form">
               <label>
                 店舗名
@@ -1220,13 +1220,13 @@ export default async function Home({
                 テストメールを送信
               </button>
             </form>
-          </section>
+          </details>
 
-          <section className="panel">
-            <div className="panel-head">
+          <details className="panel collapsible-panel" open>
+            <summary className="panel-head collapsible-summary">
               <h2>デザイン・機能</h2>
               <span>共通設定</span>
-            </div>
+            </summary>
             <form action={saveDesign} className="settings-form">
               <label>
                 ブランドカラー
@@ -1294,13 +1294,13 @@ export default async function Home({
                 ))}
               </div>
             </div>
-          </section>
+          </details>
 
-          <section className="panel">
-            <div className="panel-head">
+          <details className="panel collapsible-panel" open>
+            <summary className="panel-head collapsible-summary">
               <h2>予約受付ルール</h2>
               <span>営業時間・定休日</span>
-            </div>
+            </summary>
             <form action={saveBookingRules} className="settings-form">
               <label>
                 開始時刻
@@ -1329,13 +1329,13 @@ export default async function Home({
               </label>
               <button type="submit">保存</button>
             </form>
-          </section>
+          </details>
 
-          <section className="panel">
-            <div className="panel-head">
+          <details className="panel collapsible-panel" open>
+            <summary className="panel-head collapsible-summary">
               <h2>メール通知</h2>
               <span>予約・注文・問い合わせ</span>
-            </div>
+            </summary>
             <form action={saveNotificationSettings} className="settings-form">
               <label>
                 <span>
@@ -1374,13 +1374,13 @@ export default async function Home({
               </label>
               <button type="submit">保存</button>
             </form>
-          </section>
+          </details>
 
-          <section className="panel">
-            <div className="panel-head">
+          <details className="panel collapsible-panel" open>
+            <summary className="panel-head collapsible-summary">
               <h2>バックアップ/復元</h2>
               <span>JSON</span>
-            </div>
+            </summary>
             <div className="topbar-actions">
               <a className="secondary-action" href="/admin/backup">バックアップを取得</a>
             </div>
@@ -1391,13 +1391,13 @@ export default async function Home({
               </label>
               <button type="submit">復元</button>
             </form>
-          </section>
+          </details>
 
-          <section className="panel">
-            <div className="panel-head">
+          <details className="panel collapsible-panel" open>
+            <summary className="panel-head collapsible-summary">
               <h2>権限管理</h2>
               <span>スタッフログイン</span>
-            </div>
+            </summary>
             <form action={addAdminUser} className="settings-form">
               <label>
                 名前
@@ -1492,7 +1492,7 @@ export default async function Home({
                 ))}
               </div>
             </div>
-          </section>
+          </details>
         </section>
 
         <section id="public" className="public-preview">

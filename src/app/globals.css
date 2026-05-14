@@ -1594,6 +1594,41 @@ tr:hover td {
   gap: 10px;
 }
 
+/* Collapsible admin sections */
+.collapsible-panel {
+  overflow: clip;
+}
+
+.collapsible-summary {
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+}
+
+.collapsible-summary::-webkit-details-marker {
+  display: none;
+}
+
+.collapsible-summary::after {
+  content: "折りたたむ";
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: #ffffff;
+  padding: 7px 12px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.collapsible-panel:not([open]) .collapsible-summary {
+  margin-bottom: 0;
+}
+
+.collapsible-panel:not([open]) .collapsible-summary::after {
+  content: "開く";
+}
+
 /* Shared list/card view switch */
 .switch-list {
   display: grid;
