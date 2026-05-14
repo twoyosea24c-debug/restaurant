@@ -155,6 +155,22 @@ CREATE TABLE IF NOT EXISTS "PaymentProviderSetting" (
   CONSTRAINT "PaymentProviderSetting_storeId_fkey" FOREIGN KEY ("storeId") REFERENCES "Store" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
+CREATE TABLE IF NOT EXISTS "PageSection" (
+  "id" TEXT NOT NULL PRIMARY KEY,
+  "storeId" TEXT NOT NULL,
+  "type" TEXT NOT NULL,
+  "title" TEXT NOT NULL,
+  "body" TEXT NOT NULL DEFAULT '',
+  "buttonLabel" TEXT NOT NULL DEFAULT '',
+  "buttonHref" TEXT NOT NULL DEFAULT '',
+  "sortOrder" INTEGER NOT NULL DEFAULT 0,
+  "enabled" BOOLEAN NOT NULL DEFAULT true,
+  "metadata" TEXT NOT NULL DEFAULT '',
+  "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  "updatedAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT "PageSection_storeId_fkey" FOREIGN KEY ("storeId") REFERENCES "Store" ("id") ON DELETE CASCADE ON UPDATE CASCADE
+);
+
 CREATE TABLE IF NOT EXISTS "ModuleSetting" (
   "id" TEXT NOT NULL PRIMARY KEY,
   "storeId" TEXT NOT NULL,
@@ -267,6 +283,10 @@ CREATE INDEX IF NOT EXISTS "Payment_status_idx" ON "Payment"("status");
 CREATE UNIQUE INDEX IF NOT EXISTS "PaymentProviderSetting_storeId_key" ON "PaymentProviderSetting"("storeId");
 CREATE INDEX IF NOT EXISTS "PaymentProviderSetting_provider_idx" ON "PaymentProviderSetting"("provider");
 CREATE INDEX IF NOT EXISTS "PaymentProviderSetting_enabled_idx" ON "PaymentProviderSetting"("enabled");
+CREATE INDEX IF NOT EXISTS "PageSection_storeId_idx" ON "PageSection"("storeId");
+CREATE INDEX IF NOT EXISTS "PageSection_type_idx" ON "PageSection"("type");
+CREATE INDEX IF NOT EXISTS "PageSection_enabled_idx" ON "PageSection"("enabled");
+CREATE INDEX IF NOT EXISTS "PageSection_sortOrder_idx" ON "PageSection"("sortOrder");
 CREATE UNIQUE INDEX IF NOT EXISTS "ModuleSetting_storeId_key_key" ON "ModuleSetting"("storeId", "key");
 CREATE UNIQUE INDEX IF NOT EXISTS "NotificationSetting_storeId_key" ON "NotificationSetting"("storeId");
 CREATE INDEX IF NOT EXISTS "ReplyTemplate_storeId_idx" ON "ReplyTemplate"("storeId");

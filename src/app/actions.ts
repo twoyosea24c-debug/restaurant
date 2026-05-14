@@ -5,7 +5,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { defaultStoreId, seedDefaultData } from "@/lib/seed";
-import { toBookingStatusKey, toInquiryStatusKey, toOrderStatusKey, toPaymentProviderKey, toPaymentStatusKey, toStockMovementTypeKey } from "@/lib/data";
+import { toBookingStatusKey, toInquiryStatusKey, toOrderStatusKey, toPageSectionTypeKey, toPaymentProviderKey, toPaymentStatusKey, toStockMovementTypeKey } from "@/lib/data";
 import { notifyBookingRequest, notifyNewBooking, notifyNewInquiry, notifyNewOrder } from "@/lib/notifications";
 import { sendAdminNotification, sendCustomerMail } from "@/lib/mailer";
 import { getSessionInfo, session } from "@/lib/session";
@@ -366,6 +366,63 @@ export async function savePaymentProviderSettings(formData: FormData) {
   revalidatePath("/");
   revalidatePath("/admin");
   redirectWithNotice(formData, "/admin#settings", "決済サービス設定を保存しました。");
+}
+
+export async function updatePageSection(formData: FormData) {
+  await requireEditable(formData, "/admin#lp-builder");
+  const sectionId = text(formData, "sectionId");
+  const sortOrder = number(formData, "sortOrder");
+  if (!sectionId || !text(formData, "title")) {
+    redirectWithError(formData, "/admin#lp-builder", "セクション名と見出しを入力してください。");
+  }
+  if (!Number.isInteger(sortOrder)) {
+    redirectWithError(formData, "/admin#lp-builder", "表示順は整数で入力してください。");
+  }
+  const section = await prisma.pageSection.update({
+    where: { id: sectionId },
+    data: {
+      type: toPageSectionTypeKey(text(formData, "type")),
+      title: text(formData, "title"),
+      body: text(formData, "body"),
+      buttonLabel: text(formData, "buttonLabel"),
+      buttonHref: text(formData, "buttonHref"),
+      sortOrder,
+      enabled: text(formData, "enabled") === "true",
+      metadata: text(formData, "metadata"),
+    },
+  });
+  await writeAudit("update", "PAGE_SECTION", section.id, `LPセクションを保存: ${section.title}`);
+  revalidatePath("/");
+  revalidatePath("/admin");
+  redirectWithNotice(formData, "/admin#lp-builder", "LPセクションを保存しました。");
+}
+
+export async function addPageSection(formData: FormData) {
+  await requireEditable(formData, "/admin#lp-builder");
+  const sortOrder = number(formData, "sortOrder");
+  if (!text(formData, "title")) {
+    redirectWithError(formData, "/admin#lp-builder", "見出しを入力してください。");
+  }
+  if (!Number.isInteger(sortOrder)) {
+    redirectWithError(formData, "/admin#lp-builder", "表示順は整数で入力してください。");
+  }
+  const section = await prisma.pageSection.create({
+    data: {
+      storeId: defaultStoreId,
+      type: toPageSectionTypeKey(text(formData, "type")),
+      title: text(formData, "title"),
+      body: text(formData, "body"),
+      buttonLabel: text(formData, "buttonLabel"),
+      buttonHref: text(formData, "buttonHref"),
+      sortOrder,
+      enabled: text(formData, "enabled") !== "false",
+      metadata: text(formData, "metadata"),
+    },
+  });
+  await writeAudit("create", "PAGE_SECTION", section.id, `LPセクションを追加: ${section.title}`);
+  revalidatePath("/");
+  revalidatePath("/admin");
+  redirectWithNotice(formData, "/admin#lp-builder", "LPセクションを追加しました。");
 }
 
 export async function createBooking(formData: FormData) {

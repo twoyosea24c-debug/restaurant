@@ -30,6 +30,7 @@ model Store {
   modules     ModuleSetting[]
   notificationSetting NotificationSetting?
   paymentProviderSetting PaymentProviderSetting?
+  pageSections PageSection[]
   replyTemplates ReplyTemplate[]
   stockMovements StockMovement[]
   internalNotes InternalNote[]
@@ -192,6 +193,27 @@ model PaymentProviderSetting {
 
   @@index([provider])
   @@index([enabled])
+}
+
+model PageSection {
+  id          String   @id @default(cuid())
+  storeId     String
+  store       Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  type        String
+  title       String
+  body        String   @default("")
+  buttonLabel String   @default("")
+  buttonHref  String   @default("")
+  sortOrder   Int      @default(0)
+  enabled     Boolean  @default(true)
+  metadata    String   @default("")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([storeId])
+  @@index([type])
+  @@index([enabled])
+  @@index([sortOrder])
 }
 
 model OrderItem {

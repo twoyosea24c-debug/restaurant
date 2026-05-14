@@ -14,6 +14,8 @@ export const paymentStatuses = ["UNPAID", "PENDING", "PAID", "REFUNDED", "CANCEL
 export type PaymentStatusKey = (typeof paymentStatuses)[number];
 export const paymentProviders = ["NONE", "STRIPE", "SQUARE", "PAYPAL", "BANK_TRANSFER", "CASH", "OTHER"] as const;
 export type PaymentProviderKey = (typeof paymentProviders)[number];
+export const pageSectionTypes = ["hero", "about", "menu", "access", "booking", "products", "contact", "custom"] as const;
+export type PageSectionTypeKey = (typeof pageSectionTypes)[number];
 
 export const statusLabels: Record<OrderStatusKey, string> = {
   RECEIVED: "受付済み",
@@ -61,6 +63,17 @@ export const paymentProviderLabels: Record<PaymentProviderKey, string> = {
   OTHER: "その他",
 };
 
+export const pageSectionTypeLabels: Record<PageSectionTypeKey, string> = {
+  hero: "トップ",
+  about: "店舗案内",
+  menu: "メニュー",
+  access: "アクセス",
+  booking: "予約",
+  products: "商品販売",
+  contact: "問い合わせ",
+  custom: "自由枠",
+};
+
 export function toOrderStatusKey(status: string): OrderStatusKey {
   return orderStatuses.includes(status as OrderStatusKey) ? (status as OrderStatusKey) : "RECEIVED";
 }
@@ -83,6 +96,10 @@ export function toPaymentStatusKey(status?: string | null): PaymentStatusKey {
 
 export function toPaymentProviderKey(provider?: string | null): PaymentProviderKey {
   return paymentProviders.includes(provider as PaymentProviderKey) ? (provider as PaymentProviderKey) : "NONE";
+}
+
+export function toPageSectionTypeKey(type?: string | null): PageSectionTypeKey {
+  return pageSectionTypes.includes(type as PageSectionTypeKey) ? (type as PageSectionTypeKey) : "custom";
 }
 
 export { formatPrice };
@@ -193,7 +210,7 @@ export async function getInquiryDetail(inquiryId: string) {
 export async function getAppData() {
   await seedDefaultData();
 
-  const [store, customers, products, bookings, orders, inquiries, modules, services, notificationSetting, paymentProviderSetting, replyTemplates, stockMovements, adminUsers, auditLogs] = await Promise.all([
+  const [store, customers, products, bookings, orders, inquiries, modules, services, notificationSetting, paymentProviderSetting, pageSections, replyTemplates, stockMovements, adminUsers, auditLogs] = await Promise.all([
     prisma.store.findUniqueOrThrow({ where: { id: defaultStoreId } }),
     prisma.customer.findMany({
       where: { storeId: defaultStoreId },
@@ -236,6 +253,10 @@ export async function getAppData() {
     }),
     prisma.paymentProviderSetting.findUnique({
       where: { storeId: defaultStoreId },
+    }),
+    prisma.pageSection.findMany({
+      where: { storeId: defaultStoreId },
+      orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
     }),
     prisma.replyTemplate.findMany({
       where: { storeId: defaultStoreId },
@@ -283,6 +304,7 @@ export async function getAppData() {
     modules,
     notificationSetting,
     paymentProviderSetting,
+    pageSections,
     replyTemplates,
     stockMovements,
     adminUsers,

@@ -7,6 +7,7 @@ export async function seedDefaultData() {
   if (existingStore) {
     await ensureBookingSeed();
     await ensurePaymentProviderSetting();
+    await ensurePageSections(existingStore.name, existingStore.description);
     return existingStore;
   }
 
@@ -196,6 +197,8 @@ export async function seedDefaultData() {
     },
   });
 
+  await createDefaultPageSections(store.name, store.description);
+
   void oil;
   void ticket;
   void counseling;
@@ -260,4 +263,87 @@ async function ensurePaymentProviderSetting() {
       instructions: "正式発売後に店舗ごとに利用する決済サービスを選択してください。",
     },
   });
+}
+
+async function createDefaultPageSections(storeName: string, storeDescription: string) {
+  await prisma.pageSection.createMany({
+    data: [
+      {
+        storeId,
+        type: "hero",
+        title: storeName,
+        body: storeDescription,
+        buttonLabel: "予約する",
+        buttonHref: "#booking",
+        sortOrder: 10,
+        enabled: true,
+      },
+      {
+        storeId,
+        type: "about",
+        title: "店舗案内",
+        body: "小規模店舗の予約、問い合わせ、商品販売を一つにまとめた店舗ページです。",
+        buttonLabel: "問い合わせ",
+        buttonHref: "#contact",
+        sortOrder: 20,
+        enabled: true,
+      },
+      {
+        storeId,
+        type: "menu",
+        title: "メニュー",
+        body: "初回にも使いやすいメニューと、相談しながら選べるサービスを用意しています。",
+        buttonLabel: "予約する",
+        buttonHref: "#booking",
+        sortOrder: 30,
+        enabled: true,
+      },
+      {
+        storeId,
+        type: "products",
+        title: "商品販売",
+        body: "店頭受け取りや事前相談に使える商品を注文できます。",
+        buttonLabel: "商品を見る",
+        buttonHref: "#shop",
+        sortOrder: 40,
+        enabled: true,
+      },
+      {
+        storeId,
+        type: "booking",
+        title: "予約受付",
+        body: "希望日と時間を選んで予約できます。",
+        buttonLabel: "予約する",
+        buttonHref: "#booking",
+        sortOrder: 50,
+        enabled: true,
+      },
+      {
+        storeId,
+        type: "access",
+        title: "アクセス",
+        body: "住所や来店方法は店舗情報に合わせて編集してください。",
+        buttonLabel: "",
+        buttonHref: "",
+        sortOrder: 60,
+        enabled: true,
+      },
+      {
+        storeId,
+        type: "contact",
+        title: "問い合わせ",
+        body: "予約前の相談、商品についての質問を受け付けています。",
+        buttonLabel: "問い合わせる",
+        buttonHref: "#contact",
+        sortOrder: 70,
+        enabled: true,
+      },
+    ],
+  });
+}
+
+async function ensurePageSections(storeName: string, storeDescription: string) {
+  const count = await prisma.pageSection.count({ where: { storeId } });
+  if (count > 0) return;
+  await createDefaultPageSections(storeName, storeDescription);
 }

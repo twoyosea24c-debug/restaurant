@@ -1721,6 +1721,23 @@ tr:hover td {
   display: grid;
 }
 
+.lp-admin-list:has(#lp-view-card:checked) .switch-table {
+  display: none;
+}
+
+.lp-admin-list:has(#lp-view-card:checked) .switch-card-list {
+  display: grid;
+}
+
+.lp-section {
+  scroll-margin-top: 18px;
+}
+
+.lp-section > p {
+  margin-top: 0;
+  color: var(--muted);
+}
+
 /* Customer admin */
 .customer-admin-list {
   display: grid;

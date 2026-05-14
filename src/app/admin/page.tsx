@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import {
   addCustomer,
   addAdminUser,
+  addPageSection,
   addProduct,
   addReplyTemplate,
   adjustStock,
@@ -21,6 +22,7 @@ import {
   updateBookingStatus,
   updateInquiryStatus,
   updateOrderStatus,
+  updatePageSection,
   updateProduct,
   updateReplyTemplate,
   updateAdminUser,
@@ -38,6 +40,8 @@ import {
   paymentStatusLabels,
   paymentProviderLabels,
   paymentProviders,
+  pageSectionTypeLabels,
+  pageSectionTypes,
   parseTags,
   stockMovementTypes,
   stockMovementTypeLabels,
@@ -47,6 +51,7 @@ import {
   toOrderStatusKey,
   toPaymentStatusKey,
   toPaymentProviderKey,
+  toPageSectionTypeKey,
   toStockMovementTypeKey,
 } from "@/lib/data";
 import { session, verifySessionValue } from "@/lib/session";
@@ -172,6 +177,7 @@ export default async function Home({
           <a href="#stock">在庫管理</a>
           <a href="#orders">注文管理</a>
           <a href="#audit">監査ログ</a>
+          <a href="#lp-builder">LP編集</a>
           <a href="#settings">設定</a>
         </nav>
       </aside>
@@ -1192,6 +1198,145 @@ export default async function Home({
             </div>
           </div>
           {data.auditLogs.length === 0 ? <p className="empty-state">監査ログはまだありません。</p> : null}
+        </details>
+
+        <details id="lp-builder" className="panel collapsible-panel" open>
+          <summary className="panel-head collapsible-summary">
+            <h2>LP編集</h2>
+            <span>トップ画面・店舗案内・メニュー・機能パーツ</span>
+          </summary>
+          <form action={addPageSection} className="form-grid">
+            <label>
+              種類
+              <select name="type" defaultValue="custom">
+                {pageSectionTypes.map((type) => (
+                  <option key={type} value={type}>{pageSectionTypeLabels[type]}</option>
+                ))}
+              </select>
+            </label>
+            <label>
+              見出し
+              <input name="title" placeholder="新しいセクション" required />
+            </label>
+            <label>
+              表示順
+              <input name="sortOrder" type="number" defaultValue={80} required />
+            </label>
+            <label>
+              状態
+              <select name="enabled" defaultValue="true">
+                <option value="true">表示</option>
+                <option value="false">非表示</option>
+              </select>
+            </label>
+            <label>
+              本文
+              <textarea name="body" rows={3} placeholder="店舗の説明、案内文、キャンペーンなど" />
+            </label>
+            <label>
+              ボタン名
+              <input name="buttonLabel" placeholder="詳しく見る" />
+            </label>
+            <label>
+              ボタンリンク
+              <input name="buttonHref" placeholder="#booking または https://..." />
+            </label>
+            <label>
+              追加情報
+              <input name="metadata" placeholder="将来の画像URLや地図URL用" />
+            </label>
+            <button type="submit">LPセクションを追加</button>
+          </form>
+          <div className="switch-list lp-admin-list">
+            <div className="product-view-switch" aria-label="LPセクション一覧の表示切替">
+              <input id="lp-view-list" name="lpView" type="radio" defaultChecked />
+              <label htmlFor="lp-view-list">縦列</label>
+              <input id="lp-view-card" name="lpView" type="radio" />
+              <label htmlFor="lp-view-card">カード</label>
+            </div>
+            <div className="table-wrap switch-table">
+              <table className="compact-admin-table">
+                <thead>
+                  <tr>
+                    <th>順</th>
+                    <th>種類</th>
+                    <th>見出し</th>
+                    <th>本文</th>
+                    <th>状態</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {data.pageSections.map((section) => (
+                    <tr key={section.id}>
+                      <td>{section.sortOrder}</td>
+                      <td>{pageSectionTypeLabels[toPageSectionTypeKey(section.type)]}</td>
+                      <td><strong>{section.title}</strong></td>
+                      <td className="compact-text">{section.body || "-"}</td>
+                      <td><span className="module-status">{section.enabled ? "表示" : "非表示"}</span></td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <div className="switch-card-list">
+              {data.pageSections.map((section) => (
+                <article className="switch-card" key={section.id}>
+                  <div className="switch-card-head">
+                    <div>
+                      <h3>{section.title}</h3>
+                      <p>{pageSectionTypeLabels[toPageSectionTypeKey(section.type)]} / 表示順 {section.sortOrder}</p>
+                    </div>
+                    <span className="module-status">{section.enabled ? "表示" : "非表示"}</span>
+                  </div>
+                  <form action={updatePageSection} className="settings-form">
+                    <input name="sectionId" type="hidden" value={section.id} />
+                    <label>
+                      種類
+                      <select name="type" defaultValue={section.type}>
+                        {pageSectionTypes.map((type) => (
+                          <option key={type} value={type}>{pageSectionTypeLabels[type]}</option>
+                        ))}
+                      </select>
+                    </label>
+                    <label>
+                      見出し
+                      <input name="title" defaultValue={section.title} required />
+                    </label>
+                    <label>
+                      本文
+                      <textarea name="body" rows={4} defaultValue={section.body} />
+                    </label>
+                    <div className="form-grid product-inline-fields">
+                      <label>
+                        表示順
+                        <input name="sortOrder" type="number" defaultValue={section.sortOrder} required />
+                      </label>
+                      <label>
+                        状態
+                        <select name="enabled" defaultValue={String(section.enabled)}>
+                          <option value="true">表示</option>
+                          <option value="false">非表示</option>
+                        </select>
+                      </label>
+                    </div>
+                    <label>
+                      ボタン名
+                      <input name="buttonLabel" defaultValue={section.buttonLabel} />
+                    </label>
+                    <label>
+                      ボタンリンク
+                      <input name="buttonHref" defaultValue={section.buttonHref} />
+                    </label>
+                    <label>
+                      追加情報
+                      <input name="metadata" defaultValue={section.metadata} />
+                    </label>
+                    <button type="submit">保存</button>
+                  </form>
+                </article>
+              ))}
+            </div>
+          </div>
         </details>
 
         <section id="settings" className="dashboard-grid">
