@@ -310,8 +310,8 @@ export default async function PublicPage({ searchParams }: { searchParams: Promi
           }))}
           timeOptions={bookingTimeOptions}
         />
-        <section className="dashboard-grid" style={{ marginTop: 18 }}>
-          <section className="panel">
+        <section className="dashboard-grid request-flow-grid">
+          <section className="panel request-panel">
             <div className="panel-head">
               <h2>予約変更依頼</h2>
               <span>予約番号で受付</span>
@@ -322,7 +322,7 @@ export default async function PublicPage({ searchParams }: { searchParams: Promi
               <button type="submit">変更を依頼</button>
             </form>
           </section>
-          <section className="panel">
+          <section className="panel request-panel">
             <div className="panel-head">
               <h2>予約キャンセル依頼</h2>
               <span>予約番号で受付</span>
@@ -338,12 +338,12 @@ export default async function PublicPage({ searchParams }: { searchParams: Promi
 
       <ShopClient paymentProviderSetting={data.paymentProviderSetting} products={data.activeProducts} />
 
-      <section id="contact" className="panel saas-live-section">
+      <section id="contact" className="panel saas-live-section contact-live-section">
         <div className="panel-head">
           <h2>問い合わせ</h2>
           <span>予約・注文と同じ顧客情報へ紐付け</span>
         </div>
-        <form action={createInquiry} className="form-grid">
+        <form action={createInquiry} className="form-grid contact-form-grid">
           <label><span className="field-label">名前 <RequiredMark /></span><input name="name" required /></label>
           <label><span className="field-label">メール <RequiredMark /></span><input name="email" type="email" required /></label>
           <label><span className="field-label">電話 <RequiredMark /></span><input name="phone" required /></label>

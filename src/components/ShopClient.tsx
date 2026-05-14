@@ -109,13 +109,13 @@ export function ShopClient({ paymentProviderSetting, products }: { paymentProvid
   }
 
   return (
-    <details id="shop" className="panel collapsible-panel" open>
+    <details id="shop" className="panel collapsible-panel saas-live-section shop-live-section" open>
       <summary className="panel-head collapsible-summary">
         <h2>商品一覧・注文受付</h2>
         <span>{paymentEnabled ? `${paymentName}を利用` : "決済なしで注文受付"}</span>
       </summary>
       {message && !orderComplete ? <p className="inline-feedback">{message}</p> : null}
-      <div className="product-grid">
+      <div className="product-grid shop-product-grid">
         {products.map((product) => (
           <article className="product-card" key={product.id}>
             <div className="product-thumb">{product.name.slice(0, 1)}</div>
@@ -147,7 +147,7 @@ export function ShopClient({ paymentProviderSetting, products }: { paymentProvid
         ) : null}
       </div>
 
-      <div className="dashboard-grid" style={{ marginTop: 18 }}>
+      <div className="dashboard-grid shop-order-grid">
         <details className="panel collapsible-panel" open>
           <summary className="panel-head collapsible-summary">
             <h2>カート</h2>

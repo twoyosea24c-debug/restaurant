@@ -2687,8 +2687,144 @@ form button {
 }
 
 .saas-live-section {
+  position: relative;
+  overflow: clip;
   border-radius: 20px;
+  border-color: color-mix(in srgb, var(--saas-green) 18%, var(--saas-line));
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(248, 251, 249, 0.96)),
+    radial-gradient(circle at top right, rgba(15, 61, 53, 0.08), transparent 34%);
   box-shadow: var(--saas-shadow);
+  padding: clamp(18px, 3vw, 28px);
+}
+
+.saas-live-section > .panel-head,
+.saas-live-section > .collapsible-summary {
+  align-items: flex-start;
+  border-bottom: 1px solid var(--saas-line);
+  padding-bottom: 16px;
+}
+
+.saas-live-section > .panel-head h2,
+.saas-live-section > .collapsible-summary h2 {
+  color: var(--saas-navy);
+  font-size: clamp(22px, 3vw, 28px);
+  line-height: 1.18;
+}
+
+.saas-live-section > .panel-head span,
+.saas-live-section > .collapsible-summary span {
+  color: var(--saas-green);
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.saas-live-section .form-intro {
+  border-color: color-mix(in srgb, var(--saas-green) 18%, var(--saas-line));
+  background: #ffffff;
+  color: var(--saas-muted);
+}
+
+.saas-live-section input,
+.saas-live-section textarea,
+.saas-live-section select {
+  min-height: 50px;
+  border-color: color-mix(in srgb, var(--saas-line) 82%, #cbd5d1);
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: inset 0 1px 0 rgba(16, 35, 63, 0.02);
+}
+
+.saas-live-section textarea {
+  min-height: 112px;
+}
+
+.saas-live-section input:focus,
+.saas-live-section textarea:focus,
+.saas-live-section select:focus {
+  border-color: color-mix(in srgb, var(--saas-green) 52%, var(--saas-line));
+  box-shadow: 0 0 0 4px rgba(15, 61, 53, 0.1);
+  outline: none;
+}
+
+.saas-live-section form button,
+.saas-live-section .primary-action {
+  border-radius: 14px;
+  box-shadow: 0 14px 28px rgba(15, 61, 53, 0.18);
+}
+
+.saas-live-section .secondary-action,
+.saas-live-section .quantity-controls button {
+  border-radius: 12px;
+}
+
+.request-flow-grid,
+.shop-order-grid {
+  margin-top: 20px;
+}
+
+.request-panel,
+.shop-order-grid > .panel {
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow: 0 14px 40px rgba(16, 35, 63, 0.05);
+}
+
+.request-panel .settings-form,
+.shop-order-grid .settings-form {
+  max-width: none;
+}
+
+.shop-live-section {
+  display: grid;
+  gap: 20px;
+}
+
+.shop-product-grid {
+  gap: 16px;
+}
+
+.shop-product-grid .product-card {
+  border-color: color-mix(in srgb, var(--saas-line) 86%, #dfe8e3);
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: 0 14px 36px rgba(16, 35, 63, 0.06);
+  padding: 14px;
+}
+
+.shop-product-grid .product-thumb {
+  border-radius: 16px;
+  background:
+    linear-gradient(135deg, rgba(15, 61, 53, 0.08), rgba(16, 35, 63, 0.04)),
+    #f7faf7;
+  color: var(--saas-green);
+}
+
+.shop-product-grid .product-card h3 {
+  color: var(--saas-navy);
+}
+
+.shop-product-grid .product-actions {
+  gap: 10px;
+}
+
+.payment-provider-notice {
+  border: 1px solid color-mix(in srgb, var(--saas-green) 18%, var(--saas-line));
+  background: #ffffff;
+  box-shadow: 0 12px 32px rgba(16, 35, 63, 0.05);
+  padding: 16px;
+}
+
+.payment-provider-notice p {
+  color: var(--saas-muted);
+  line-height: 1.7;
+}
+
+.contact-form-grid label:last-of-type {
+  grid-column: 1 / -1;
+}
+
+.contact-form-grid button {
+  grid-column: 1 / -1;
 }
 
 .saas-store-info {
