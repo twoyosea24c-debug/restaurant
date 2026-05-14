@@ -12,6 +12,8 @@ export const stockMovementTypes = ["IN", "OUT", "ADJUST"] as const;
 export type StockMovementTypeKey = (typeof stockMovementTypes)[number];
 export const paymentStatuses = ["UNPAID", "PENDING", "PAID", "REFUNDED", "CANCELED"] as const;
 export type PaymentStatusKey = (typeof paymentStatuses)[number];
+export const paymentProviders = ["NONE", "STRIPE", "SQUARE", "PAYPAL", "BANK_TRANSFER", "CASH", "OTHER"] as const;
+export type PaymentProviderKey = (typeof paymentProviders)[number];
 
 export const statusLabels: Record<OrderStatusKey, string> = {
   RECEIVED: "受付済み",
@@ -49,6 +51,16 @@ export const paymentStatusLabels: Record<PaymentStatusKey, string> = {
   CANCELED: "キャンセル",
 };
 
+export const paymentProviderLabels: Record<PaymentProviderKey, string> = {
+  NONE: "未設定",
+  STRIPE: "Stripe",
+  SQUARE: "Square",
+  PAYPAL: "PayPal",
+  BANK_TRANSFER: "銀行振込",
+  CASH: "店頭決済",
+  OTHER: "その他",
+};
+
 export function toOrderStatusKey(status: string): OrderStatusKey {
   return orderStatuses.includes(status as OrderStatusKey) ? (status as OrderStatusKey) : "RECEIVED";
 }
@@ -67,6 +79,10 @@ export function toStockMovementTypeKey(type: string): StockMovementTypeKey {
 
 export function toPaymentStatusKey(status?: string | null): PaymentStatusKey {
   return paymentStatuses.includes(status as PaymentStatusKey) ? (status as PaymentStatusKey) : "UNPAID";
+}
+
+export function toPaymentProviderKey(provider?: string | null): PaymentProviderKey {
+  return paymentProviders.includes(provider as PaymentProviderKey) ? (provider as PaymentProviderKey) : "NONE";
 }
 
 export { formatPrice };
@@ -177,7 +193,7 @@ export async function getInquiryDetail(inquiryId: string) {
 export async function getAppData() {
   await seedDefaultData();
 
-  const [store, customers, products, bookings, orders, inquiries, modules, services, notificationSetting, replyTemplates, stockMovements, adminUsers, auditLogs] = await Promise.all([
+  const [store, customers, products, bookings, orders, inquiries, modules, services, notificationSetting, paymentProviderSetting, replyTemplates, stockMovements, adminUsers, auditLogs] = await Promise.all([
     prisma.store.findUniqueOrThrow({ where: { id: defaultStoreId } }),
     prisma.customer.findMany({
       where: { storeId: defaultStoreId },
@@ -216,6 +232,9 @@ export async function getAppData() {
       orderBy: { createdAt: "asc" },
     }),
     prisma.notificationSetting.findUnique({
+      where: { storeId: defaultStoreId },
+    }),
+    prisma.paymentProviderSetting.findUnique({
       where: { storeId: defaultStoreId },
     }),
     prisma.replyTemplate.findMany({
@@ -263,6 +282,7 @@ export async function getAppData() {
     orders,
     modules,
     notificationSetting,
+    paymentProviderSetting,
     replyTemplates,
     stockMovements,
     adminUsers,

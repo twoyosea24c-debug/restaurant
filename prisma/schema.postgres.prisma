@@ -29,6 +29,7 @@ model Store {
   payments    Payment[]
   modules     ModuleSetting[]
   notificationSetting NotificationSetting?
+  paymentProviderSetting PaymentProviderSetting?
   replyTemplates ReplyTemplate[]
   stockMovements StockMovement[]
   internalNotes InternalNote[]
@@ -172,6 +173,25 @@ model Payment {
 
   @@index([storeId])
   @@index([status])
+}
+
+model PaymentProviderSetting {
+  id           String   @id @default(cuid())
+  storeId      String   @unique
+  store        Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  enabled      Boolean  @default(false)
+  provider     String   @default("NONE")
+  displayName  String   @default("")
+  mode         String   @default("TEST")
+  publicKey    String   @default("")
+  secretRef    String   @default("")
+  checkoutUrl  String   @default("")
+  instructions String   @default("")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([provider])
+  @@index([enabled])
 }
 
 model OrderItem {

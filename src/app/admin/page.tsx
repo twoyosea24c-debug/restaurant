@@ -12,6 +12,7 @@ import {
   saveBookingRules,
   saveDesign,
   saveNotificationSettings,
+  savePaymentProviderSettings,
   saveStore,
   sendTestNotification,
   toggleModule,
@@ -35,6 +36,8 @@ import {
   getAppData,
   orderStatuses,
   paymentStatusLabels,
+  paymentProviderLabels,
+  paymentProviders,
   parseTags,
   stockMovementTypes,
   stockMovementTypeLabels,
@@ -43,6 +46,7 @@ import {
   toInquiryStatusKey,
   toOrderStatusKey,
   toPaymentStatusKey,
+  toPaymentProviderKey,
   toStockMovementTypeKey,
 } from "@/lib/data";
 import { session, verifySessionValue } from "@/lib/session";
@@ -392,7 +396,7 @@ export default async function Home({
           </details>
         </section>
 
-        <ShopClient products={data.activeProducts} />
+        <ShopClient paymentProviderSetting={data.paymentProviderSetting} products={data.activeProducts} />
 
         <details id="calendar" className="panel collapsible-panel" open>
           <summary className="panel-head collapsible-summary">
@@ -1374,6 +1378,70 @@ export default async function Home({
               </label>
               <button type="submit">保存</button>
             </form>
+          </details>
+
+          <details className="panel collapsible-panel" open>
+            <summary className="panel-head collapsible-summary">
+              <h2>決済サービス設定</h2>
+              <span>正式発売後に店舗ごとに選択</span>
+            </summary>
+            <form action={savePaymentProviderSettings} className="settings-form">
+              <label>
+                <span>
+                  <input
+                    name="enabled"
+                    type="checkbox"
+                    defaultChecked={data.paymentProviderSetting?.enabled ?? false}
+                    style={{ width: "auto", marginRight: 8 }}
+                  />
+                  決済サービスを利用する
+                </span>
+              </label>
+              <label>
+                決済サービス
+                <select name="provider" defaultValue={toPaymentProviderKey(data.paymentProviderSetting?.provider)}>
+                  {paymentProviders.map((provider) => (
+                    <option key={provider} value={provider}>{paymentProviderLabels[provider]}</option>
+                  ))}
+                </select>
+              </label>
+              <label>
+                表示名
+                <input name="displayName" defaultValue={data.paymentProviderSetting?.displayName ?? ""} placeholder="例: Stripe決済、銀行振込、店頭決済" />
+              </label>
+              <label>
+                モード
+                <select name="mode" defaultValue={data.paymentProviderSetting?.mode ?? "TEST"}>
+                  <option value="TEST">テスト</option>
+                  <option value="LIVE">本番</option>
+                </select>
+              </label>
+              <label>
+                公開キー・公開ID
+                <input name="publicKey" defaultValue={data.paymentProviderSetting?.publicKey ?? ""} placeholder="公開可能なキーのみ" />
+              </label>
+              <label>
+                秘密キーの保管名
+                <input name="secretRef" defaultValue={data.paymentProviderSetting?.secretRef ?? ""} placeholder="例: Vercel環境変数 STRIPE_SECRET_KEY" />
+              </label>
+              <label>
+                決済ページURL
+                <input name="checkoutUrl" defaultValue={data.paymentProviderSetting?.checkoutUrl ?? ""} placeholder="https://..." />
+              </label>
+              <label>
+                顧客への案内文
+                <textarea
+                  name="instructions"
+                  rows={4}
+                  defaultValue={data.paymentProviderSetting?.instructions ?? ""}
+                  placeholder="注文後に店舗から決済リンクを送付します。"
+                />
+              </label>
+              <button type="submit">決済設定を保存</button>
+            </form>
+            <p className="empty-state" style={{ marginTop: 12 }}>
+              秘密キーそのものは画面に保存せず、Vercelなどの環境変数名を「秘密キーの保管名」に記録する想定です。
+            </p>
           </details>
 
           <details className="panel collapsible-panel" open>

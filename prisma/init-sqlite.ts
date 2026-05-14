@@ -139,6 +139,22 @@ CREATE TABLE IF NOT EXISTS "Payment" (
   CONSTRAINT "Payment_orderId_fkey" FOREIGN KEY ("orderId") REFERENCES "Order" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
+CREATE TABLE IF NOT EXISTS "PaymentProviderSetting" (
+  "id" TEXT NOT NULL PRIMARY KEY,
+  "storeId" TEXT NOT NULL,
+  "enabled" BOOLEAN NOT NULL DEFAULT false,
+  "provider" TEXT NOT NULL DEFAULT 'NONE',
+  "displayName" TEXT NOT NULL DEFAULT '',
+  "mode" TEXT NOT NULL DEFAULT 'TEST',
+  "publicKey" TEXT NOT NULL DEFAULT '',
+  "secretRef" TEXT NOT NULL DEFAULT '',
+  "checkoutUrl" TEXT NOT NULL DEFAULT '',
+  "instructions" TEXT NOT NULL DEFAULT '',
+  "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  "updatedAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT "PaymentProviderSetting_storeId_fkey" FOREIGN KEY ("storeId") REFERENCES "Store" ("id") ON DELETE CASCADE ON UPDATE CASCADE
+);
+
 CREATE TABLE IF NOT EXISTS "ModuleSetting" (
   "id" TEXT NOT NULL PRIMARY KEY,
   "storeId" TEXT NOT NULL,
@@ -248,6 +264,9 @@ CREATE INDEX IF NOT EXISTS "Order_status_idx" ON "Order"("status");
 CREATE UNIQUE INDEX IF NOT EXISTS "Payment_orderId_key" ON "Payment"("orderId");
 CREATE INDEX IF NOT EXISTS "Payment_storeId_idx" ON "Payment"("storeId");
 CREATE INDEX IF NOT EXISTS "Payment_status_idx" ON "Payment"("status");
+CREATE UNIQUE INDEX IF NOT EXISTS "PaymentProviderSetting_storeId_key" ON "PaymentProviderSetting"("storeId");
+CREATE INDEX IF NOT EXISTS "PaymentProviderSetting_provider_idx" ON "PaymentProviderSetting"("provider");
+CREATE INDEX IF NOT EXISTS "PaymentProviderSetting_enabled_idx" ON "PaymentProviderSetting"("enabled");
 CREATE UNIQUE INDEX IF NOT EXISTS "ModuleSetting_storeId_key_key" ON "ModuleSetting"("storeId", "key");
 CREATE UNIQUE INDEX IF NOT EXISTS "NotificationSetting_storeId_key" ON "NotificationSetting"("storeId");
 CREATE INDEX IF NOT EXISTS "ReplyTemplate_storeId_idx" ON "ReplyTemplate"("storeId");

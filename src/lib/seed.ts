@@ -6,6 +6,7 @@ export async function seedDefaultData() {
   const existingStore = await prisma.store.findUnique({ where: { id: storeId } });
   if (existingStore) {
     await ensureBookingSeed();
+    await ensurePaymentProviderSetting();
     return existingStore;
   }
 
@@ -184,6 +185,17 @@ export async function seedDefaultData() {
     ],
   });
 
+  await prisma.paymentProviderSetting.create({
+    data: {
+      storeId,
+      enabled: false,
+      provider: "NONE",
+      displayName: "決済サービス未設定",
+      mode: "TEST",
+      instructions: "正式発売後に店舗ごとに利用する決済サービスを選択してください。",
+    },
+  });
+
   void oil;
   void ticket;
   void counseling;
@@ -231,6 +243,21 @@ async function ensureBookingSeed() {
       status: "CONFIRMED",
       startAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 3),
       note: "既存予約のサンプル",
+    },
+  });
+}
+
+async function ensurePaymentProviderSetting() {
+  await prisma.paymentProviderSetting.upsert({
+    where: { storeId },
+    update: {},
+    create: {
+      storeId,
+      enabled: false,
+      provider: "NONE",
+      displayName: "決済サービス未設定",
+      mode: "TEST",
+      instructions: "正式発売後に店舗ごとに利用する決済サービスを選択してください。",
     },
   });
 }

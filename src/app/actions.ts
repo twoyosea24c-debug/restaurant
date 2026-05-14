@@ -5,7 +5,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { defaultStoreId, seedDefaultData } from "@/lib/seed";
-import { toBookingStatusKey, toInquiryStatusKey, toOrderStatusKey, toPaymentStatusKey, toStockMovementTypeKey } from "@/lib/data";
+import { toBookingStatusKey, toInquiryStatusKey, toOrderStatusKey, toPaymentProviderKey, toPaymentStatusKey, toStockMovementTypeKey } from "@/lib/data";
 import { notifyBookingRequest, notifyNewBooking, notifyNewInquiry, notifyNewOrder } from "@/lib/notifications";
 import { sendAdminNotification, sendCustomerMail } from "@/lib/mailer";
 import { getSessionInfo, session } from "@/lib/session";
@@ -331,6 +331,41 @@ export async function updatePaymentStatus(formData: FormData) {
   revalidatePath("/admin");
   revalidatePath(`/admin/orders/${orderId}`);
   redirectWithNotice(formData, `/admin/orders/${orderId}`, "決済ステータスを更新しました。");
+}
+
+export async function savePaymentProviderSettings(formData: FormData) {
+  await requireManager(formData, "/admin#settings");
+  const enabled = formData.get("enabled") === "on";
+  const provider = toPaymentProviderKey(text(formData, "provider"));
+  const mode = text(formData, "mode") === "LIVE" ? "LIVE" : "TEST";
+  const setting = await prisma.paymentProviderSetting.upsert({
+    where: { storeId: defaultStoreId },
+    update: {
+      enabled,
+      provider,
+      displayName: text(formData, "displayName"),
+      mode,
+      publicKey: text(formData, "publicKey"),
+      secretRef: text(formData, "secretRef"),
+      checkoutUrl: text(formData, "checkoutUrl"),
+      instructions: text(formData, "instructions"),
+    },
+    create: {
+      storeId: defaultStoreId,
+      enabled,
+      provider,
+      displayName: text(formData, "displayName"),
+      mode,
+      publicKey: text(formData, "publicKey"),
+      secretRef: text(formData, "secretRef"),
+      checkoutUrl: text(formData, "checkoutUrl"),
+      instructions: text(formData, "instructions"),
+    },
+  });
+  await writeAudit("payment-provider", "STORE", defaultStoreId, `決済サービス設定を保存: ${setting.provider}`);
+  revalidatePath("/");
+  revalidatePath("/admin");
+  redirectWithNotice(formData, "/admin#settings", "決済サービス設定を保存しました。");
 }
 
 export async function createBooking(formData: FormData) {

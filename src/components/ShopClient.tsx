@@ -13,6 +13,15 @@ type Product = {
   active: boolean;
 };
 
+type PaymentProviderSetting = {
+  enabled: boolean;
+  provider: string;
+  displayName: string;
+  mode: string;
+  checkoutUrl: string;
+  instructions: string;
+} | null;
+
 type CartItem = {
   productId: string;
   name: string;
@@ -24,12 +33,27 @@ function RequiredMark() {
   return <span className="required-badge">必須</span>;
 }
 
-export function ShopClient({ products }: { products: Product[] }) {
+function paymentProviderLabel(provider?: string) {
+  const labels: Record<string, string> = {
+    NONE: "未設定",
+    STRIPE: "Stripe",
+    SQUARE: "Square",
+    PAYPAL: "PayPal",
+    BANK_TRANSFER: "銀行振込",
+    CASH: "店頭決済",
+    OTHER: "その他",
+  };
+  return labels[provider ?? "NONE"] ?? "その他";
+}
+
+export function ShopClient({ paymentProviderSetting, products }: { paymentProviderSetting?: PaymentProviderSetting; products: Product[] }) {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [message, setMessage] = useState("");
   const [orderComplete, setOrderComplete] = useState(false);
   const [isPending, startTransition] = useTransition();
   const total = useMemo(() => cart.reduce((sum, item) => sum + item.price * item.quantity, 0), [cart]);
+  const paymentEnabled = Boolean(paymentProviderSetting?.enabled && paymentProviderSetting.provider !== "NONE");
+  const paymentName = paymentProviderSetting?.displayName || paymentProviderLabel(paymentProviderSetting?.provider);
 
   function addToCart(product: Product) {
     setOrderComplete(false);
@@ -88,7 +112,7 @@ export function ShopClient({ products }: { products: Product[] }) {
     <details id="shop" className="panel collapsible-panel" open>
       <summary className="panel-head collapsible-summary">
         <h2>商品一覧・注文受付</h2>
-        <span>決済なしで注文受付</span>
+        <span>{paymentEnabled ? `${paymentName}を利用` : "決済なしで注文受付"}</span>
       </summary>
       {message && !orderComplete ? <p className="status-badge">{message}</p> : null}
       <div className="product-grid">
@@ -107,6 +131,20 @@ export function ShopClient({ products }: { products: Product[] }) {
             </div>
           </article>
         ))}
+      </div>
+
+      <div className="payment-provider-notice">
+        <strong>{paymentEnabled ? `決済方法: ${paymentName}` : "決済方法: 店舗からの案内"}</strong>
+        <p>
+          {paymentEnabled
+            ? paymentProviderSetting?.instructions || "注文後、店舗から決済方法をご案内します。"
+            : "現在はアプリ内決済を行わず、注文受付後に店舗から支払い方法をご連絡します。"}
+        </p>
+        {paymentEnabled && paymentProviderSetting?.checkoutUrl ? (
+          <a className="secondary-action" href={paymentProviderSetting.checkoutUrl} rel="noreferrer" target="_blank">
+            決済ページを確認
+          </a>
+        ) : null}
       </div>
 
       <div className="dashboard-grid" style={{ marginTop: 18 }}>
@@ -144,7 +182,11 @@ export function ShopClient({ products }: { products: Product[] }) {
             <span>店舗から確認連絡をします</span>
           </summary>
           <form action={submitOrder} className="settings-form">
-            <p className="empty-state">送信後、在庫と受け取り方法を店舗からご連絡します。決済はまだ行われません。</p>
+            <p className="empty-state">
+              {paymentEnabled
+                ? "送信後、店舗から在庫確認と決済手続きの案内を行います。"
+                : "送信後、在庫と受け取り方法を店舗からご連絡します。決済はまだ行われません。"}
+            </p>
             {orderComplete ? <p className="notice-banner">{message}</p> : null}
             <label>
               <span className="field-label">名前 <RequiredMark /></span>

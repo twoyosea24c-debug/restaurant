@@ -140,7 +140,7 @@ export default async function PublicPage({ searchParams }: { searchParams: Promi
         </section>
       </section>
 
-      <ShopClient products={data.activeProducts} />
+      <ShopClient paymentProviderSetting={data.paymentProviderSetting} products={data.activeProducts} />
 
       <section id="contact" className="panel">
         <div className="panel-head">
