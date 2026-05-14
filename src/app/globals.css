@@ -2251,10 +2251,36 @@ form button {
 }
 
 .saas-mockup {
+  position: relative;
+  min-height: 430px;
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 16px;
-  align-items: end;
+  align-items: center;
+  isolation: isolate;
+  perspective: 1200px;
+}
+
+.saas-mockup::before {
+  content: "";
+  position: absolute;
+  inset: 30px 8px 20px;
+  z-index: -2;
+  border: 1px solid var(--saas-line);
+  border-radius: 28px;
+  background: #f6f8f6;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+.saas-mockup::after {
+  content: "";
+  position: absolute;
+  right: 20px;
+  bottom: 28px;
+  left: 34px;
+  z-index: -1;
+  height: 44px;
+  border-radius: 999px;
+  background: rgba(16, 35, 63, 0.12);
+  filter: blur(18px);
 }
 
 .mockup-phone,
@@ -2270,10 +2296,18 @@ form button {
 .mockup-phone {
   display: grid;
   gap: 12px;
-  max-width: 320px;
-  min-height: 360px;
-  margin: 0 auto;
+  position: absolute;
+  right: 0;
+  bottom: 12px;
+  z-index: 2;
+  width: min(235px, 58vw);
+  min-height: 365px;
+  margin: 0;
   padding: 18px;
+  border: 8px solid #10233f;
+  border-radius: 34px;
+  transform: rotate(-5deg);
+  transform-origin: center bottom;
 }
 
 .mockup-bar {
@@ -2300,8 +2334,15 @@ form button {
 
 .mockup-phone p,
 .mockup-phone strong,
-.mockup-phone span {
+.mockup-phone span,
+.mockup-phone label {
   margin: 0;
+}
+
+.mockup-phone label {
+  color: var(--saas-muted);
+  font-size: 12px;
+  font-weight: 800;
 }
 
 .mockup-phone strong {
@@ -2319,10 +2360,28 @@ form button {
   font-weight: 800;
 }
 
+.mockup-input {
+  border: 1px solid var(--saas-line);
+  border-radius: 12px;
+  background: var(--saas-soft);
+  color: var(--saas-ink);
+  padding: 11px 12px;
+  font-size: 14px;
+  font-weight: 800;
+}
+
 .mockup-dashboard {
   display: grid;
   gap: 12px;
-  padding: 18px;
+  position: absolute;
+  top: 34px;
+  left: 0;
+  width: min(430px, 88%);
+  min-height: 280px;
+  padding: 22px;
+  border-radius: 24px;
+  transform: rotate(3deg) translateX(4px);
+  transform-origin: left center;
 }
 
 .mockup-dashboard-head,
@@ -2359,6 +2418,47 @@ form button {
   font-style: normal;
   font-weight: 800;
   white-space: nowrap;
+}
+
+.mockup-toolbar {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.mockup-toolbar span {
+  height: 8px;
+  border-radius: 999px;
+  background: var(--saas-line);
+}
+
+.mockup-toolbar span:first-child {
+  width: 62px;
+}
+
+.mockup-toolbar span:nth-child(2) {
+  width: 38px;
+}
+
+.mockup-toolbar span:nth-child(3) {
+  width: 82px;
+  margin-left: auto;
+  background: #dcebe5;
+}
+
+.mockup-metrics {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.mockup-metrics span {
+  border-radius: 12px;
+  background: #f8fbf9;
+  color: var(--saas-navy);
+  padding: 12px;
+  font-size: 13px;
+  font-weight: 900;
 }
 
 .saas-section,
@@ -2623,6 +2723,21 @@ form button {
   .saas-hero-actions a {
     width: 100%;
   }
+
+  .saas-mockup {
+    min-height: 440px;
+  }
+
+  .mockup-dashboard {
+    width: 92%;
+    transform: rotate(2deg);
+  }
+
+  .mockup-phone {
+    right: 4px;
+    width: min(218px, 62vw);
+    transform: rotate(-4deg);
+  }
 }
 
 @media (min-width: 760px) {
@@ -2633,10 +2748,6 @@ form button {
   .saas-hero {
     grid-template-columns: minmax(0, 1.05fr) minmax(330px, 0.95fr);
     padding: 42px;
-  }
-
-  .saas-mockup {
-    grid-template-columns: 0.8fr 1fr;
   }
 
   .saas-card-grid,

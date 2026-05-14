@@ -113,17 +113,15 @@ export default async function PublicPage({ searchParams }: { searchParams: Promi
           </div>
         </div>
         <div className="saas-mockup" aria-label="アプリ画面のモックアップ">
-          <div className="mockup-phone">
-            <div className="mockup-bar" />
-            <p>予約受付</p>
-            <strong>ベーシックケア</strong>
-            <span>5月21日 10:30</span>
-            <button type="button">予約する</button>
-          </div>
           <div className="mockup-dashboard">
             <div className="mockup-dashboard-head">
               <span>Today</span>
               <strong>予約一覧</strong>
+            </div>
+            <div className="mockup-toolbar">
+              <span />
+              <span />
+              <span />
             </div>
             {["10:00 田中様", "11:30 佐藤様", "14:00 山本様"].map((row) => (
               <div className="mockup-row" key={row}>
@@ -131,6 +129,19 @@ export default async function PublicPage({ searchParams }: { searchParams: Promi
                 <em>受付済</em>
               </div>
             ))}
+            <div className="mockup-metrics" aria-hidden="true">
+              <span>予約 12</span>
+              <span>問い合わせ 4</span>
+            </div>
+          </div>
+          <div className="mockup-phone">
+            <div className="mockup-bar" />
+            <p>予約受付</p>
+            <strong>ベーシックケア</strong>
+            <span>5月21日 10:30</span>
+            <label>お名前</label>
+            <div className="mockup-input">山田 花子</div>
+            <button type="button">予約する</button>
           </div>
         </div>
       </header>
