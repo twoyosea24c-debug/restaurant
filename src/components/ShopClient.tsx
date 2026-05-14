@@ -85,11 +85,11 @@ export function ShopClient({ products }: { products: Product[] }) {
   }
 
   return (
-    <section id="shop" className="panel">
-      <div className="panel-head">
+    <details id="shop" className="panel collapsible-panel" open>
+      <summary className="panel-head collapsible-summary">
         <h2>商品一覧・注文受付</h2>
         <span>決済なしで注文受付</span>
-      </div>
+      </summary>
       {message && !orderComplete ? <p className="status-badge">{message}</p> : null}
       <div className="product-grid">
         {products.map((product) => (
@@ -110,11 +110,11 @@ export function ShopClient({ products }: { products: Product[] }) {
       </div>
 
       <div className="dashboard-grid" style={{ marginTop: 18 }}>
-        <section className="panel">
-          <div className="panel-head">
+        <details className="panel collapsible-panel" open>
+          <summary className="panel-head collapsible-summary">
             <h2>カート</h2>
             <span>{cart.length}種類</span>
-          </div>
+          </summary>
           {cart.length === 0 ? (
             <p className="empty-state">カートは空です。</p>
           ) : (
@@ -136,36 +136,38 @@ export function ShopClient({ products }: { products: Product[] }) {
             <span>合計</span>
             <strong>{formatPrice(total)}</strong>
           </div>
-        </section>
+        </details>
 
-        <form action={submitOrder} className="panel settings-form">
-          <div className="panel-head">
+        <details className="panel collapsible-panel" open>
+          <summary className="panel-head collapsible-summary">
             <h2>注文情報</h2>
             <span>店舗から確認連絡をします</span>
-          </div>
-          <p className="empty-state">送信後、在庫と受け取り方法を店舗からご連絡します。決済はまだ行われません。</p>
-          {orderComplete ? <p className="notice-banner">{message}</p> : null}
-          <label>
-            <span className="field-label">名前 <RequiredMark /></span>
-            <input name="name" required />
-          </label>
-          <label>
-            <span className="field-label">メール <RequiredMark /></span>
-            <input name="email" type="email" required />
-          </label>
-          <label>
-            <span className="field-label">電話 <RequiredMark /></span>
-            <input name="phone" required />
-          </label>
-          <label>
-            メモ
-            <textarea name="note" rows={3} />
-          </label>
-          <button disabled={cart.length === 0 || isPending} type="submit">
-            {isPending ? "注文中" : "注文する"}
-          </button>
-        </form>
+          </summary>
+          <form action={submitOrder} className="settings-form">
+            <p className="empty-state">送信後、在庫と受け取り方法を店舗からご連絡します。決済はまだ行われません。</p>
+            {orderComplete ? <p className="notice-banner">{message}</p> : null}
+            <label>
+              <span className="field-label">名前 <RequiredMark /></span>
+              <input name="name" required />
+            </label>
+            <label>
+              <span className="field-label">メール <RequiredMark /></span>
+              <input name="email" type="email" required />
+            </label>
+            <label>
+              <span className="field-label">電話 <RequiredMark /></span>
+              <input name="phone" required />
+            </label>
+            <label>
+              メモ
+              <textarea name="note" rows={3} />
+            </label>
+            <button disabled={cart.length === 0 || isPending} type="submit">
+              {isPending ? "注文中" : "注文する"}
+            </button>
+          </form>
+        </details>
       </div>
-    </section>
+    </details>
   );
 }
