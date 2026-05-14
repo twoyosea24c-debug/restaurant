@@ -1382,6 +1382,41 @@ tr:hover td {
   gap: 14px;
 }
 
+.product-view-switch {
+  display: inline-flex;
+  width: fit-content;
+  gap: 4px;
+  padding: 4px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--soft);
+}
+
+.product-view-switch input {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.product-view-switch label {
+  min-height: 34px;
+  border-radius: 999px;
+  padding: 8px 14px;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.product-view-switch input:checked + label {
+  background: #ffffff;
+  color: var(--ink);
+  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.08);
+}
+
 .product-table-wrap {
   margin-top: 0;
 }
@@ -1390,10 +1425,12 @@ tr:hover td {
 .product-admin-table td {
   vertical-align: middle;
   white-space: nowrap;
+  padding-top: 9px;
+  padding-bottom: 9px;
 }
 
 .product-admin-table td:first-child {
-  min-width: 220px;
+  min-width: 240px;
   white-space: normal;
 }
 
@@ -1453,12 +1490,48 @@ tr:hover td {
 }
 
 .compact-actions {
-  min-width: 210px;
+  min-width: 196px;
 }
 
 .danger-action {
   border-color: #f2c6bf;
   color: #a33a2d;
+}
+
+.product-card-list {
+  display: none;
+  gap: 10px;
+}
+
+.product-admin-list:has(#product-view-card:checked) .product-table-wrap {
+  display: none;
+}
+
+.product-admin-list:has(#product-view-card:checked) .product-card-list {
+  display: grid;
+}
+
+.product-list-card {
+  display: grid;
+  gap: 10px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #ffffff;
+  padding: 12px;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.product-list-card strong {
+  display: block;
+  font-size: 15px;
+}
+
+.product-list-card span {
+  display: block;
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: 12px;
 }
 
 .product-detail-stack {
@@ -1568,5 +1641,10 @@ tr:hover td {
   .product-detail-price {
     justify-items: end;
     text-align: right;
+  }
+
+  .product-list-card {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
   }
 }

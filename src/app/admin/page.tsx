@@ -725,6 +725,13 @@ export default async function Home({
             </form>
 
             <div className="product-admin-list">
+              <div className="product-view-switch" aria-label="商品一覧の表示切替">
+                <input id="product-view-list" name="productView" type="radio" defaultChecked />
+                <label htmlFor="product-view-list">縦列</label>
+                <input id="product-view-card" name="productView" type="radio" />
+                <label htmlFor="product-view-card">カード</label>
+              </div>
+
               <div className="table-wrap product-table-wrap">
                 <table className="product-admin-table">
                   <thead>
@@ -771,6 +778,20 @@ export default async function Home({
                     ))}
                   </tbody>
                 </table>
+              </div>
+              <div className="product-card-list">
+                {filteredProducts.map((product) => (
+                  <a className="product-list-card" href={`#product-detail-${product.id}`} key={product.id}>
+                    <div>
+                      <strong>{product.name}</strong>
+                      <span>{product.description}</span>
+                    </div>
+                    <div>
+                      <strong>{formatPrice(product.price)}</strong>
+                      <span>在庫 {product.stock} / {product.active ? "公開中" : "非公開"}</span>
+                    </div>
+                  </a>
+                ))}
               </div>
               {filteredProducts.length === 0 ? <p className="empty-state">条件に一致する商品はありません。</p> : null}
               <div className="product-detail-stack">
