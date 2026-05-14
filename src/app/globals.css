@@ -1594,6 +1594,75 @@ tr:hover td {
   gap: 10px;
 }
 
+/* Customer admin */
+.customer-admin-list {
+  display: grid;
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.customer-table-wrap {
+  margin-top: 0;
+}
+
+.customer-admin-table th,
+.customer-admin-table td {
+  padding-top: 9px;
+  padding-bottom: 9px;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.customer-admin-table td:nth-child(4) {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.compact-tags {
+  min-width: 120px;
+}
+
+.customer-card-list {
+  display: none;
+  gap: 12px;
+}
+
+.customer-admin-list:has(#customer-view-card:checked) .customer-table-wrap {
+  display: none;
+}
+
+.customer-admin-list:has(#customer-view-card:checked) .customer-card-list {
+  display: grid;
+}
+
+.customer-list-card {
+  display: grid;
+  gap: 14px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #ffffff;
+  padding: 16px;
+}
+
+.customer-card-head {
+  display: grid;
+  gap: 10px;
+}
+
+.customer-card-head h3 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.customer-card-head p {
+  margin: 5px 0 0;
+  color: var(--muted);
+}
+
+.customer-card-summary {
+  margin: 0;
+}
+
 .product-admin-head {
   display: grid;
   gap: 10px;
@@ -1646,5 +1715,10 @@ tr:hover td {
   .product-list-card {
     grid-template-columns: minmax(0, 1fr) auto;
     align-items: center;
+  }
+
+  .customer-card-head {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: start;
   }
 }

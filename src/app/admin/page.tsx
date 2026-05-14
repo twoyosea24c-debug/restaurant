@@ -500,60 +500,104 @@ export default async function Home({
             </label>
             <button type="submit">追加</button>
           </form>
-          <div className="table-wrap" style={{ marginTop: 18 }}>
-            <table>
-              <thead>
-                <tr>
-                  <th>名前</th>
-                  <th>メール</th>
-                  <th>電話</th>
-                  <th>履歴</th>
-                  <th>タグ・メモ</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredCustomers.map((customer) => {
-                  const orderTotal = customer.orders.reduce((sum, order) => sum + order.total, 0);
-                  return (
-                    <tr key={customer.id}>
-                      <td>
-                        <strong>{customer.name}</strong>
-                        <p>
-                          <a className="secondary-action" href={`/admin/customers/${customer.id}`}>
-                            詳細
-                          </a>
-                        </p>
-                      </td>
-                      <td>{customer.email}</td>
-                      <td>{customer.phone || "-"}</td>
-                      <td>
-                        予約 {customer.bookings.length}件 / 注文 {customer.orders.length}件 / 問い合わせ{" "}
-                        {customer.inquiries.length}件 / 購入 {formatPrice(orderTotal)}
-                      </td>
-                      <td>
-                        <div className="tag-list">
-                          {parseTags(customer.tags).map((tag) => (
-                            <span key={tag}>{tag}</span>
-                          ))}
-                        </div>
-                        <form action={updateCustomerNote} className="settings-form" style={{ marginTop: 10 }}>
-                          <input name="customerId" type="hidden" value={customer.id} />
-                          <label>
-                            タグ
-                            <input name="tags" defaultValue={customer.tags} />
-                          </label>
-                          <label>
-                            メモ
-                            <textarea name="memo" rows={3} defaultValue={customer.memo} />
-                          </label>
-                          <button type="submit">保存</button>
-                        </form>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+          <div className="customer-admin-list">
+            <div className="product-view-switch" aria-label="顧客一覧の表示切替">
+              <input id="customer-view-list" name="customerView" type="radio" defaultChecked />
+              <label htmlFor="customer-view-list">縦列</label>
+              <input id="customer-view-card" name="customerView" type="radio" />
+              <label htmlFor="customer-view-card">カード</label>
+            </div>
+
+            <div className="table-wrap customer-table-wrap">
+              <table className="customer-admin-table">
+                <thead>
+                  <tr>
+                    <th>名前</th>
+                    <th>メール</th>
+                    <th>電話</th>
+                    <th>履歴</th>
+                    <th>タグ</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredCustomers.map((customer) => {
+                    const orderTotal = customer.orders.reduce((sum, order) => sum + order.total, 0);
+                    return (
+                      <tr key={customer.id}>
+                        <td><strong>{customer.name}</strong></td>
+                        <td>{customer.email}</td>
+                        <td>{customer.phone || "-"}</td>
+                        <td>
+                          予約 {customer.bookings.length} / 注文 {customer.orders.length} / 問い合わせ {customer.inquiries.length} / {formatPrice(orderTotal)}
+                        </td>
+                        <td>
+                          <div className="tag-list compact-tags">
+                            {parseTags(customer.tags).length === 0 ? <span>タグなし</span> : parseTags(customer.tags).map((tag) => <span key={tag}>{tag}</span>)}
+                          </div>
+                        </td>
+                        <td>
+                          <div className="table-actions compact-actions">
+                            <a className="secondary-action" href={`/admin/customers/${customer.id}`}>詳細</a>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+
+            <div className="customer-card-list">
+              {filteredCustomers.map((customer) => {
+                const orderTotal = customer.orders.reduce((sum, order) => sum + order.total, 0);
+                return (
+                  <article className="customer-list-card" key={customer.id}>
+                    <div className="customer-card-head">
+                      <div>
+                        <h3>{customer.name}</h3>
+                        <p>{customer.email} / {customer.phone || "電話未登録"}</p>
+                      </div>
+                      <a className="secondary-action" href={`/admin/customers/${customer.id}`}>詳細</a>
+                    </div>
+                    <div className="summary-strip customer-card-summary">
+                      <div>
+                        <p>予約</p>
+                        <strong>{customer.bookings.length}</strong>
+                      </div>
+                      <div>
+                        <p>注文</p>
+                        <strong>{customer.orders.length}</strong>
+                      </div>
+                      <div>
+                        <p>問い合わせ</p>
+                        <strong>{customer.inquiries.length}</strong>
+                      </div>
+                      <div>
+                        <p>購入</p>
+                        <strong>{formatPrice(orderTotal)}</strong>
+                      </div>
+                    </div>
+                    <div className="tag-list">
+                      {parseTags(customer.tags).length === 0 ? <span>タグなし</span> : parseTags(customer.tags).map((tag) => <span key={tag}>{tag}</span>)}
+                    </div>
+                    <form action={updateCustomerNote} className="settings-form">
+                      <input name="customerId" type="hidden" value={customer.id} />
+                      <input name="returnTo" type="hidden" value="/admin#customers" />
+                      <label>
+                        タグ
+                        <input name="tags" defaultValue={customer.tags} />
+                      </label>
+                      <label>
+                        メモ
+                        <textarea name="memo" rows={3} defaultValue={customer.memo} />
+                      </label>
+                      <button type="submit">保存</button>
+                    </form>
+                  </article>
+                );
+              })}
+            </div>
           </div>
         </section>
 
