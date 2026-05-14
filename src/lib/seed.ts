@@ -19,6 +19,7 @@ export async function seedDefaultData() {
       phone: "03-0000-0000",
       email: "hello@example.com",
       brandColor: "#0f766e",
+      lpDesignPreset: "simple",
       ctaLabel: "問い合わせる",
     },
   });

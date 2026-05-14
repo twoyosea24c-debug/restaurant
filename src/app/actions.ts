@@ -5,7 +5,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { defaultStoreId, seedDefaultData } from "@/lib/seed";
-import { toBookingStatusKey, toInquiryStatusKey, toOrderStatusKey, toPageSectionTypeKey, toPaymentProviderKey, toPaymentStatusKey, toStockMovementTypeKey } from "@/lib/data";
+import { toBookingStatusKey, toInquiryStatusKey, toLpDesignPresetKey, toOrderStatusKey, toPageSectionTypeKey, toPaymentProviderKey, toPaymentStatusKey, toStockMovementTypeKey } from "@/lib/data";
 import { notifyBookingRequest, notifyNewBooking, notifyNewInquiry, notifyNewOrder } from "@/lib/notifications";
 import { sendAdminNotification, sendCustomerMail } from "@/lib/mailer";
 import { getSessionInfo, session } from "@/lib/session";
@@ -715,6 +715,7 @@ export async function saveDesign(formData: FormData) {
     where: { id: defaultStoreId },
     data: {
       brandColor: text(formData, "brandColor"),
+      lpDesignPreset: toLpDesignPresetKey(text(formData, "lpDesignPreset")),
       ctaLabel: text(formData, "ctaLabel"),
     },
   });

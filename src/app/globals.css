@@ -1738,6 +1738,139 @@ tr:hover td {
   color: var(--muted);
 }
 
+/* LP design presets */
+.lp-visual,
+.design-preset-visual {
+  display: grid;
+  min-height: 132px;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: #f7faf8;
+  color: var(--brand);
+  font-size: 42px;
+  font-weight: 900;
+}
+
+.public-hero .lp-visual {
+  order: 2;
+}
+
+.design-preset-grid {
+  display: grid;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.design-preset-card {
+  display: grid;
+  gap: 10px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #ffffff;
+  padding: 12px;
+}
+
+.design-preset-card h3,
+.design-preset-card p {
+  margin: 0;
+}
+
+.design-preset-card p {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.lp-design-cool {
+  --lp-bg: #0b1220;
+  --lp-panel: #111827;
+  --lp-ink: #eef2ff;
+  --lp-muted: #a7b4d5;
+  --lp-accent: #38bdf8;
+}
+
+.lp-design-cute {
+  --lp-bg: #fff7fb;
+  --lp-panel: #ffffff;
+  --lp-ink: #422038;
+  --lp-muted: #8b5875;
+  --lp-accent: #f472b6;
+}
+
+.lp-design-simple {
+  --lp-bg: #f7faf8;
+  --lp-panel: #ffffff;
+  --lp-ink: #10201c;
+  --lp-muted: #5d6b66;
+  --lp-accent: var(--brand);
+}
+
+.lp-design-stylish {
+  --lp-bg: #f6f3ee;
+  --lp-panel: #fffdfa;
+  --lp-ink: #27221d;
+  --lp-muted: #756a5e;
+  --lp-accent: #8a6f47;
+}
+
+.public-main[class*="lp-design-"] {
+  background: var(--lp-bg);
+  color: var(--lp-ink);
+}
+
+.public-main[class*="lp-design-"] .panel,
+.public-main[class*="lp-design-"] .public-hero,
+.public-main[class*="lp-design-"] .product-card,
+.public-main[class*="lp-design-"] .public-info {
+  background: var(--lp-panel);
+  color: var(--lp-ink);
+}
+
+.public-main[class*="lp-design-"] .panel-head span,
+.public-main[class*="lp-design-"] p,
+.public-main[class*="lp-design-"] .empty-state {
+  color: var(--lp-muted);
+}
+
+.public-main[class*="lp-design-"] .primary-action,
+.public-main[class*="lp-design-"] button {
+  background: var(--lp-accent);
+}
+
+.public-main[class*="lp-design-"] .lp-visual,
+.design-preset-card[class*="lp-design-"] .design-preset-visual {
+  background: color-mix(in srgb, var(--lp-accent) 8%, var(--lp-panel));
+  color: var(--lp-accent);
+}
+
+.public-main.lp-design-cool .public-hero,
+.design-preset-card.lp-design-cool {
+  background: #111827;
+  color: #eef2ff;
+}
+
+.public-main.lp-design-cute .public-hero,
+.design-preset-card.lp-design-cute {
+  background: #fff7fb;
+  color: #422038;
+}
+
+.public-main.lp-design-stylish .public-hero,
+.design-preset-card.lp-design-stylish {
+  background: #fffdfa;
+  color: #27221d;
+}
+
+@media (min-width: 760px) {
+  .public-hero .lp-visual {
+    order: 0;
+  }
+
+  .design-preset-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
 /* Customer admin */
 .customer-admin-list {
   display: grid;

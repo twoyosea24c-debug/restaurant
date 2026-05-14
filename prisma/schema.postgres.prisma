@@ -16,6 +16,7 @@ model Store {
   phone       String
   email       String
   brandColor  String          @default("#0f766e")
+  lpDesignPreset String       @default("simple")
   ctaLabel    String          @default("問い合わせる")
   businessOpenTime String     @default("10:00")
   businessCloseTime String    @default("18:00")

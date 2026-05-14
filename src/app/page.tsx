@@ -2,7 +2,7 @@ import type { CSSProperties } from "react";
 import { createInquiry, requestBookingCancel, requestBookingChange } from "@/app/actions";
 import { BookingForm } from "@/components/BookingForm";
 import { ShopClient } from "@/components/ShopClient";
-import { formatPrice, getAppData, pageSectionTypeLabels, toPageSectionTypeKey } from "@/lib/data";
+import { formatPrice, getAppData, pageSectionTypeLabels, toLpDesignPresetKey, toPageSectionTypeKey } from "@/lib/data";
 
 export const dynamic = "force-dynamic";
 
@@ -32,6 +32,7 @@ export default async function PublicPage({ searchParams }: { searchParams: Promi
   const { notice, error } = await searchParams;
   const data = await getAppData();
   const brandStyle = { "--brand": data.store.brandColor } as CSSProperties & Record<"--brand", string>;
+  const lpDesignPreset = toLpDesignPresetKey(data.store.lpDesignPreset);
   const bookingTimeOptions = Array.from(
     {
       length: Math.max(
@@ -53,8 +54,11 @@ export default async function PublicPage({ searchParams }: { searchParams: Promi
   const navSections = enabledSections.filter((section) => !["hero", "custom"].includes(section.type));
 
   return (
-    <main className="main public-main" style={brandStyle}>
+    <main className={`main public-main lp-design-${lpDesignPreset}`} style={brandStyle}>
       <header className="public-hero">
+        <div className="lp-visual" aria-hidden="true">
+          <span>{data.store.name.slice(0, 1)}</span>
+        </div>
         <div>
           <p className="eyebrow">Store</p>
           <h1>{heroSection?.title || data.store.name}</h1>

@@ -16,6 +16,7 @@ CREATE TABLE IF NOT EXISTS "Store" (
   "phone" TEXT NOT NULL,
   "email" TEXT NOT NULL,
   "brandColor" TEXT NOT NULL DEFAULT '#0f766e',
+  "lpDesignPreset" TEXT NOT NULL DEFAULT 'simple',
   "ctaLabel" TEXT NOT NULL DEFAULT '問い合わせる',
   "businessOpenTime" TEXT NOT NULL DEFAULT '10:00',
   "businessCloseTime" TEXT NOT NULL DEFAULT '18:00',
@@ -316,6 +317,9 @@ if (!storeColumns.includes("businessCloseTime")) {
 }
 if (!storeColumns.includes("closedWeekdays")) {
   db.exec('ALTER TABLE "Store" ADD COLUMN "closedWeekdays" TEXT NOT NULL DEFAULT \'0\';');
+}
+if (!storeColumns.includes("lpDesignPreset")) {
+  db.exec('ALTER TABLE "Store" ADD COLUMN "lpDesignPreset" TEXT NOT NULL DEFAULT \'simple\';');
 }
 
 const customerColumns = db

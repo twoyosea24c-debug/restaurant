@@ -42,6 +42,9 @@ import {
   paymentProviders,
   pageSectionTypeLabels,
   pageSectionTypes,
+  lpDesignPresetDescriptions,
+  lpDesignPresetLabels,
+  lpDesignPresets,
   parseTags,
   stockMovementTypes,
   stockMovementTypeLabels,
@@ -52,6 +55,7 @@ import {
   toPaymentStatusKey,
   toPaymentProviderKey,
   toPageSectionTypeKey,
+  toLpDesignPresetKey,
   toStockMovementTypeKey,
 } from "@/lib/data";
 import { session, verifySessionValue } from "@/lib/session";
@@ -1146,60 +1150,6 @@ export default async function Home({
           </div>
         </details>
 
-        <details id="audit" className="panel collapsible-panel" open>
-          <summary className="panel-head collapsible-summary">
-            <h2>監査ログ</h2>
-            <span>直近50件</span>
-          </summary>
-          <div className="switch-list audit-admin-list">
-            <div className="product-view-switch" aria-label="監査ログの表示切替">
-              <input id="audit-view-list" name="auditView" type="radio" defaultChecked />
-              <label htmlFor="audit-view-list">縦列</label>
-              <input id="audit-view-card" name="auditView" type="radio" />
-              <label htmlFor="audit-view-card">カード</label>
-            </div>
-            <div className="table-wrap switch-table">
-              <table className="compact-admin-table">
-                <thead>
-                  <tr>
-                    <th>日時</th>
-                    <th>担当</th>
-                    <th>操作</th>
-                    <th>対象</th>
-                    <th>内容</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {data.auditLogs.map((log) => (
-                    <tr key={log.id}>
-                      <td>{log.createdAt.toLocaleString("ja-JP")}</td>
-                      <td>{log.actor}</td>
-                      <td><span className="status-badge">{log.action}</span></td>
-                      <td>{log.targetType} / {log.targetId}</td>
-                      <td className="compact-text">{log.summary}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-            <div className="switch-card-list">
-              {data.auditLogs.map((log) => (
-                <article className="switch-card" key={log.id}>
-                  <div className="switch-card-head">
-                    <div>
-                      <h3>{log.summary}</h3>
-                      <p>{log.createdAt.toLocaleString("ja-JP")} / {log.actor}</p>
-                    </div>
-                    <span className="status-badge">{log.action}</span>
-                  </div>
-                  <p className="empty-state">{log.targetType} / {log.targetId}</p>
-                </article>
-              ))}
-            </div>
-          </div>
-          {data.auditLogs.length === 0 ? <p className="empty-state">監査ログはまだありません。</p> : null}
-        </details>
-
         <details id="lp-builder" className="panel collapsible-panel" open>
           <summary className="panel-head collapsible-summary">
             <h2>LP編集</h2>
@@ -1382,11 +1332,30 @@ export default async function Home({
                 <input name="brandColor" type="color" defaultValue={data.store.brandColor} />
               </label>
               <label>
+                LPデザイン
+                <select name="lpDesignPreset" defaultValue={toLpDesignPresetKey(data.store.lpDesignPreset)}>
+                  {lpDesignPresets.map((preset) => (
+                    <option key={preset} value={preset}>{lpDesignPresetLabels[preset]}</option>
+                  ))}
+                </select>
+              </label>
+              <label>
                 ボタン表示名
                 <input name="ctaLabel" defaultValue={data.store.ctaLabel} />
               </label>
               <button type="submit">反映</button>
             </form>
+            <div className="design-preset-grid">
+              {lpDesignPresets.map((preset) => (
+                <article className={`design-preset-card lp-design-${preset}`} key={preset}>
+                  <div className="design-preset-visual" aria-hidden="true">
+                    <span>{lpDesignPresetLabels[preset].slice(0, 1)}</span>
+                  </div>
+                  <h3>{lpDesignPresetLabels[preset]}</h3>
+                  <p>{lpDesignPresetDescriptions[preset]}</p>
+                </article>
+              ))}
+            </div>
             <div className="switch-list module-admin-list">
               <div className="product-view-switch" aria-label="機能一覧の表示切替">
                 <input id="module-view-list" name="moduleView" type="radio" defaultChecked />
@@ -1707,6 +1676,60 @@ export default async function Home({
             </div>
           </details>
         </section>
+
+        <details id="audit" className="panel collapsible-panel">
+          <summary className="panel-head collapsible-summary">
+            <h2>監査ログ</h2>
+            <span>直近50件</span>
+          </summary>
+          <div className="switch-list audit-admin-list">
+            <div className="product-view-switch" aria-label="監査ログの表示切替">
+              <input id="audit-view-list" name="auditView" type="radio" defaultChecked />
+              <label htmlFor="audit-view-list">縦列</label>
+              <input id="audit-view-card" name="auditView" type="radio" />
+              <label htmlFor="audit-view-card">カード</label>
+            </div>
+            <div className="table-wrap switch-table">
+              <table className="compact-admin-table">
+                <thead>
+                  <tr>
+                    <th>日時</th>
+                    <th>担当</th>
+                    <th>操作</th>
+                    <th>対象</th>
+                    <th>内容</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {data.auditLogs.map((log) => (
+                    <tr key={log.id}>
+                      <td>{log.createdAt.toLocaleString("ja-JP")}</td>
+                      <td>{log.actor}</td>
+                      <td><span className="status-badge">{log.action}</span></td>
+                      <td>{log.targetType} / {log.targetId}</td>
+                      <td className="compact-text">{log.summary}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <div className="switch-card-list">
+              {data.auditLogs.map((log) => (
+                <article className="switch-card" key={log.id}>
+                  <div className="switch-card-head">
+                    <div>
+                      <h3>{log.summary}</h3>
+                      <p>{log.createdAt.toLocaleString("ja-JP")} / {log.actor}</p>
+                    </div>
+                    <span className="status-badge">{log.action}</span>
+                  </div>
+                  <p className="empty-state">{log.targetType} / {log.targetId}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+          {data.auditLogs.length === 0 ? <p className="empty-state">監査ログはまだありません。</p> : null}
+        </details>
 
         <section id="public" className="public-preview">
           <div>

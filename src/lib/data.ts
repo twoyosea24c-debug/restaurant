@@ -16,6 +16,8 @@ export const paymentProviders = ["NONE", "STRIPE", "SQUARE", "PAYPAL", "BANK_TRA
 export type PaymentProviderKey = (typeof paymentProviders)[number];
 export const pageSectionTypes = ["hero", "about", "menu", "access", "booking", "products", "contact", "custom"] as const;
 export type PageSectionTypeKey = (typeof pageSectionTypes)[number];
+export const lpDesignPresets = ["simple", "cool", "cute", "stylish"] as const;
+export type LpDesignPresetKey = (typeof lpDesignPresets)[number];
 
 export const statusLabels: Record<OrderStatusKey, string> = {
   RECEIVED: "受付済み",
@@ -74,6 +76,20 @@ export const pageSectionTypeLabels: Record<PageSectionTypeKey, string> = {
   custom: "自由枠",
 };
 
+export const lpDesignPresetLabels: Record<LpDesignPresetKey, string> = {
+  simple: "シンプルなサイト",
+  cool: "かっこいいサイト",
+  cute: "かわいいサイト",
+  stylish: "おしゃれなサイト",
+};
+
+export const lpDesignPresetDescriptions: Record<LpDesignPresetKey, string> = {
+  simple: "余白と読みやすさを重視した、業種を選ばないミニマルなLP。",
+  cool: "濃い色、強い見出し、シャープなカードで信頼感を出すLP。",
+  cute: "柔らかい色と丸みのある余白で、親しみやすさを出すLP。",
+  stylish: "上品な余白、細い線、落ち着いた配色で高級感を出すLP。",
+};
+
 export function toOrderStatusKey(status: string): OrderStatusKey {
   return orderStatuses.includes(status as OrderStatusKey) ? (status as OrderStatusKey) : "RECEIVED";
 }
@@ -100,6 +116,10 @@ export function toPaymentProviderKey(provider?: string | null): PaymentProviderK
 
 export function toPageSectionTypeKey(type?: string | null): PageSectionTypeKey {
   return pageSectionTypes.includes(type as PageSectionTypeKey) ? (type as PageSectionTypeKey) : "custom";
+}
+
+export function toLpDesignPresetKey(preset?: string | null): LpDesignPresetKey {
+  return lpDesignPresets.includes(preset as LpDesignPresetKey) ? (preset as LpDesignPresetKey) : "simple";
 }
 
 export { formatPrice };
